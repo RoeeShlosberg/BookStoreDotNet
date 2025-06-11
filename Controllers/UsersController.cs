@@ -50,18 +50,18 @@ namespace BookStore.Controllers
             {
                 return BadRequest(ex.Message); // Invalid user data
             }
-        }
-
-        /// <summary>
+        }        /// <summary>
         /// Authenticate a user and get a JWT token
         /// </summary>
         /// <param name="loginDto">Login credentials</param>
         /// <returns>User information and authentication token</returns>
         /// <response code="200">Returns the user info and JWT token</response>
-        /// <response code="400">If the credentials are invalid</response>
+        /// <response code="400">If the request data is invalid</response>
+        /// <response code="401">If the credentials are invalid</response>
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> LoginUser([FromBody] CreateUserDto loginDto)
         {
             if (loginDto == null || !ModelState.IsValid)
@@ -69,7 +69,7 @@ namespace BookStore.Controllers
 
             var user = await _userService.loginUserAsync(loginDto.Username, loginDto.Password);
             if (user == null)
-                return BadRequest("Invalid username or password.");
+                return Unauthorized("Invalid username or password.");
 
             return Ok(user);
         }

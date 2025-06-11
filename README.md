@@ -14,6 +14,7 @@ A modern .NET 8 Web API for managing books with JWT authentication and SQLite da
 - 👤 **User Management** - Registration and login system
 - 📖 **Swagger Documentation** - Interactive API testing interface
 - 💾 **SQLite Database** - Lightweight database with Entity Framework Core
+- 🧪 **Comprehensive Testing** - Full test coverage with unit and integration tests
 
 ## 🛠️ Tech Stack
 
@@ -21,6 +22,7 @@ A modern .NET 8 Web API for managing books with JWT authentication and SQLite da
 - **Database**: SQLite + Entity Framework Core
 - **Authentication**: JWT Bearer Tokens
 - **Documentation**: Swagger/OpenAPI
+- **Testing**: xUnit + Microsoft.AspNetCore.Mvc.Testing
 
 ## 🚀 Quick Setup
 
@@ -57,6 +59,17 @@ A modern .NET 8 Web API for managing books with JWT authentication and SQLite da
 | `POST` | `/api/books` | Create new book | ✅ |
 | `PUT` | `/api/books/{id}` | Update existing book | ✅ |
 | `DELETE` | `/api/books/{id}` | Delete book | ✅ |
+
+## 🧪 Testing
+
+Comprehensive test suite with **30 tests** covering all functionality:
+- Unit Tests (19) - Services and controllers
+- Integration Tests (11) - Full API workflows
+
+**Run tests:**
+```bash
+dotnet test BookStore.sln
+```
 
 ## 🧪 Testing the API
 
@@ -115,6 +128,11 @@ curl -X POST "http://localhost:5000/api/books" \
 **Run in watch mode (auto-restart on changes):**
 ```bash
 dotnet watch run
+```
+
+**Run tests in watch mode:**
+```bash
+dotnet watch test --project BooksApi.Tests/BooksApi.Tests.csproj
 ```
 
 **Add new migration:**

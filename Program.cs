@@ -69,7 +69,6 @@ builder.Services.AddSwaggerGen(c =>
 // Add services to the container.
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUserService, UserService>(); // Add this line
-builder.Services.AddDbContext<BooksDbContext>();
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -108,3 +107,6 @@ app.MapControllers();  // Maps controller routes
 // Initialize the database
 
 app.Run();
+
+// Make Program class accessible for testing
+public partial class Program { }
