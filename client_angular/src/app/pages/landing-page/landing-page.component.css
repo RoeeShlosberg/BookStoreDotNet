@@ -1,0 +1,100 @@
+body {
+  margin: 0; /* Remove default body margin */
+  font-family: sans-serif; /* Basic font stack */
+}
+
+.landing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 88vh; /* Full viewport height */
+  text-align: center;
+  padding: 2rem;
+  /* Example Gradient Background */
+  background: linear-gradient(135deg, #00a664 0%, #764ba2 100%);
+  color: white; /* Change text color for contrast */
+  min-height: 90.5vh; /* Ensure it takes at least the full viewport height */
+}
+
+.landing-container h1 {
+  font-size: 3rem; /* Larger title */
+  margin-bottom: 1.5rem;
+  /* color: #333; */ /* Removed as text color is now white */
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Add a subtle shadow */
+}
+
+.landing-container p {
+  font-size: 1.3rem;
+  margin-bottom: 2.5rem;
+}
+
+.landing-container button {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  background-color: #c305e4; /* A contrasting vibrant color (e.g., coral) */
+  color: white;
+  border: none;
+  margin: auto 0.5rem; /* Centered with auto margins */
+  /* space between buttons */
+  font-weight: 600; /* Slightly bolder for emphasis */
+  border-radius: 8px; /* Slightly more rounded */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.landing-container button:hover {
+  background-color: #a440c2; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+/* Style for the logout button to distinguish it if needed */
+.logout-button {
+  background-color: #dc3545; /* A common color for logout/danger actions */
+}
+
+.logout-button:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+/* Styling for the user greeting message */
+.user-greeting {
+  font-size: 2rem; /* Increased font size for emphasis */
+  font-weight: 500;
+  margin-top: 0.5rem; /* Adjust spacing if needed */
+  margin-bottom: 2rem; /* Adjust spacing if needed */
+  color: #f0f0f0; /* Lighter text color for the greeting */
+}
+
+.user-greeting .username {
+  font-weight: bold; /* Make the username bold */
+  color: #ffeb3b; /* A distinct color for the username, like a warm yellow */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Add a slight shadow to the username for pop */
+}
+
+/* Styling for the features section */
+.features {
+  margin-top: 3rem; /* Add some space above the features section */
+  width: 100%; /* Ensure it takes full width for centering its children if needed */
+  display: flex; /* Using flex to arrange feature cards */
+  justify-content: space-around; /* Distribute space around feature cards */
+  flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+}
+
+.feature-card {
+  background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent white cards */
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 1rem;
+  width: 30%; /* Adjust width as needed, considering margins */
+  min-width: 250px; /* Minimum width for smaller screens */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.feature-card h2 {
+  margin-top: 0;
+  color: #ffeb3b; /* Match username color for headings */
+}
+
+/* You might want to add global styles to styles.css for body margin and font if not already there */

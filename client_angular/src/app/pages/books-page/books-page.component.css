@@ -1,0 +1,328 @@
+.books-page-container {
+  padding: 2rem;
+  min-height: 100vh; /* Ensure it takes at least the full viewport height */
+  background: linear-gradient(to right top, #f79a9a, #5fa4e9); /* Slightly different subtle gradient */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Header styling */
+.books-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e3d9ec;
+  flex-wrap: wrap; /* Allow wrapping for header actions */
+}
+
+.books-page-header h1 {
+  font-size: 2.5em;
+  color: #333;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(90deg, #c605a2, #007bff); /* Gradient for the header */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem; /* Space between buttons in the header */
+  align-items: center;
+}
+
+/* General action button styling (can be shared or extended) */
+.action-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+}
+
+.action-button:active {
+  transform: translateY(0);
+}
+
+.add-book-button {
+  background-color: #28a745; /* Green color for add */
+}
+
+.add-book-button:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+/* Styling for the "Back to Home" button to make it more appealing */
+.home-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: #7300ff; /* Primary blue */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.home-button:hover {
+  background-color: #8020e7; /* Darker blue on hover */
+  transform: translateY(-1px);
+}
+
+.home-button:active {
+  transform: translateY(0);
+}
+
+/* Logout button styling (can be shared or specific) */
+.logout-button {
+  background-color: #dc3545; /* Red for logout/danger */
+}
+
+.logout-button:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+/* Loading indicator styling */
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  font-size: 1.5rem;
+  color: #555;
+}
+
+.loading-indicator p::after {
+  content: '...';
+  animation: dots 1.5s steps(3, end) infinite;
+  display: inline-block;
+}
+
+@keyframes dots {
+  0%, 20% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(0);
+  }
+}
+
+/* Error message styling */
+.error-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+  padding: 2rem;
+  background-color: #fff0f0; /* Light red background for errors */
+  border: 1px solid #ffcccc;
+  border-radius: 8px;
+  color: #d8000c; /* Dark red text for errors */
+  text-align: center;
+}
+
+.error-message p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.error-message button {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #d8000c;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.error-message button:hover {
+  background-color: #a00000; /* Darker red on hover */
+}
+
+.navigation-footer {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.navigation-footer button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  background-color: #007bff; /* Example blue */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.navigation-footer button:hover {
+  background-color: #0056b3;
+}
+
+/* Add Book Form Styling */
+.add-book-form-container {
+  /* white background, little tranclucant */
+  background-color: rgba(255, 255, 255, 0.75); /* Slightly translucent white */
+  padding: 2rem 2.5rem; /* Adjusted padding */
+  border-radius: 10px; /* Slightly more rounded corners */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Softer, more diffused shadow */
+  margin-bottom: 2.5rem; /* More space below the form */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.add-book-form-container h2 {
+  color: #2c3e50; /* Dark, desaturated blue for heading */
+  text-align: center;
+  margin-bottom: 2rem; /* Increased margin */
+  font-weight: 600;
+  font-size: 1.8em; /* Slightly adjusted size */
+}
+
+.add-book-form .form-group {
+  margin-bottom: 1.25rem; /* Adjusted spacing */
+}
+
+.add-book-form label {
+  display: block;
+  margin-bottom: 0.6rem; /* Adjusted spacing */
+  color: #34495e; /* Slightly lighter, desaturated blue for labels */
+  font-weight: 500;
+  font-size: 0.95em;
+}
+
+.add-book-form input[type="text"],
+.add-book-form input[type="date"] {
+  width: 100%;
+  padding: 0.75rem 1rem; /* Adjusted padding */
+  border: 1px solid #dce4ec; /* Lighter border color */
+  border-radius: 6px; /* More rounded inputs */
+  box-sizing: border-box;
+  font-size: 1rem;
+  color: #2c3e50;
+  background-color: #fff;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.add-book-form input[type="text"]:focus,
+.add-book-form input[type="date"]:focus {
+  border-color: #764ba2; /* Using a color from one of the gradients for focus */
+  box-shadow: 0 0 0 0.15rem rgba(118, 75, 162, 0.2);
+  outline: none;
+}
+
+/* Styling for field-level validation errors */
+.add-book-form .error-message {
+  color: #e74c3c; /* A standard, clear red for errors */
+  font-size: 0.8em; /* Smaller font for errors */
+  margin-top: 0.4rem; /* Reduced margin */
+  padding-left: 0.2rem; /* Slight indent if needed */
+  display: block; /* Ensure it takes its own line if not already */
+}
+
+/* Styling for backend/general form submission errors */
+.add-book-form .backend-error {
+  text-align: center;
+  padding: 0.6rem 0.8rem; /* Reduced padding */
+  background-color: #f3edfd; /* Lighter error background */
+  border: 1px solid #e74c3c;
+  color: #c0392b; /* Darker error text */
+  border-radius: 5px;
+  margin-top: 1.25rem;
+  font-size: 0.85em; /* Smaller font */
+}
+
+.add-book-form .submit-button {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1.05rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Login page gradient */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  font-weight: 600;
+  margin-top: 0.5rem; /* Added some margin above the button */
+}
+
+.add-book-form .submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.add-book-form .submit-button:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Search container styling */
+.search-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  align-items: center;
+  justify-content: space-between; /* This will push the input group to the left and reset button to the right */
+}
+
+.search-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.search-input {
+  /* flex-grow: 1; Remove or comment out to prevent full width */
+  width: 400px; /* Set a fixed width, or use max-width/flex-basis */
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.search-button {
+  background-color: #007bff; /* Primary blue */
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+.reset-button {
+  max-width: fit-content;
+  background-color: #6c757d; /* Secondary gray */
+}
+
+.reset-button:hover {
+  background-color: #545b62;
+}
+
+/* No books message styling */
+.no-books-message {
+  text-align: center;
+  font-size: 1.5rem; /* Increased font size */
+  color: #555;
+  margin-top: 3rem;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

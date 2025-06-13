@@ -1,0 +1,74 @@
+<div class="book-page-container">
+  <div class="navigation-header">
+    <button (click)="goBackToBooks()" class="back-button">&larr; Back to Books</button>
+    <div class="actions-toolbar" *ngIf="!isLoading && !error && book && isLoggedIn">
+      <button (click)="toggleEditForm()" class="action-button edit-button">
+        {{ showEditForm ? 'Cancel Edit' : 'Edit Book' }}
+      </button>
+      <button (click)="deleteBook()" class="action-button delete-button" [disabled]="showEditForm">Delete Book</button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading && !showEditForm" class="loading-indicator">
+    <p>Loading book details...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="deleteError" class="error-message delete-error-message">
+    <p>{{ deleteError }}</p>
+  </div>
+
+  <div *ngIf="showEditForm && book && isLoggedIn" class="edit-book-form-container">
+    <h2>Edit "{{ book.title }}"</h2>
+    <form [formGroup]="editBookForm" (ngSubmit)="onEditBookSubmit()" class="edit-book-form">
+      <div class="form-group">
+        <label for="edit-title">Title</label>
+        <input id="edit-title" type="text" formControlName="title" placeholder="Enter book title">
+        <div *ngIf="editBookForm.get('title')?.invalid && (editBookForm.get('title')?.dirty || editBookForm.get('title')?.touched)" class="error-message form-error">
+          <span *ngIf="editBookForm.get('title')?.errors?.['required']">Title is required.</span>
+          <span *ngIf="editBookForm.get('title')?.errors?.['minlength']">Title must be at least 3 characters long.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="edit-author">Author</label>
+        <input id="edit-author" type="text" formControlName="author" placeholder="Enter author's name">
+        <div *ngIf="editBookForm.get('author')?.invalid && (editBookForm.get('author')?.dirty || editBookForm.get('author')?.touched)" class="error-message form-error">
+          <span *ngIf="editBookForm.get('author')?.errors?.['required']">Author is required.</span>
+          <span *ngIf="editBookForm.get('author')?.errors?.['minlength']">Author must be at least 3 characters long.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="edit-publishedDate">Published Date</label>
+        <input id="edit-publishedDate" type="date" formControlName="publishedDate">
+        <div *ngIf="editBookForm.get('publishedDate')?.invalid && (editBookForm.get('publishedDate')?.dirty || editBookForm.get('publishedDate')?.touched)" class="error-message form-error">
+          <span *ngIf="editBookForm.get('publishedDate')?.errors?.['required']">Published Date is required.</span>
+        </div>
+      </div>
+
+      <div *ngIf="editError" class="error-message backend-error">
+        {{ editError }}
+      </div>
+      
+      <div *ngIf="isLoading && showEditForm" class="loading-indicator form-loading">
+        <p>Updating book...</p>
+      </div>
+
+      <button type="submit" [disabled]="editBookForm.invalid || (isLoading && showEditForm)" class="submit-button">
+        {{ (isLoading && showEditForm) ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </form>
+  </div>
+
+  <div *ngIf="!isLoading && !error && book && !showEditForm" class="book-details-content">
+    <app-book-view [book]="book"></app-book-view>
+  </div>
+
+  <div *ngIf="!isLoading && !error && !book && !showEditForm" class="no-book-found">
+    <p>Book not found.</p>
+  </div>
+</div>

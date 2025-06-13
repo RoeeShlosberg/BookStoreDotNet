@@ -1,0 +1,8 @@
+<div class="book-card" *ngIf="book">
+  <h2>{{ book.title }}</h2>
+  <p class="author">Author: {{ book.author }}</p>
+  <p class="published-date">Published: {{ book.publishedDate | date: 'longDate' }}</p>
+</div>
+<div *ngIf="!book" class="no-book-data">
+  <p>No book data provided.</p>
+</div>

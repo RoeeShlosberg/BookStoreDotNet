@@ -1,0 +1,7 @@
+body {
+  margin: 0; /* Remove default body margin */
+  font-family: sans-serif; /* Basic font stack */
+}
+
+/* Styles for AppComponent are now minimal as content is routed */
+/* You can add styles here that apply to the overall app shell, if any */

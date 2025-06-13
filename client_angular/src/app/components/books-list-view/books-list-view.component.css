@@ -1,0 +1,61 @@
+.books-list-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
+  gap: 2rem; /* Spacing between cards */
+  padding: 2rem;
+  background: rgba(174, 166, 166, 0.1); /* Slightly translucent background */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Style for when there are no books, to center it and make it more prominent */
+.no-books {
+  display: flex;
+  flex-direction: column; /* Stack icon and text vertically */
+  justify-content: center;
+  align-items: center;
+  min-height: 250px; /* Increased height */
+  width: 100%;
+  padding: 2.5rem; /* Increased padding */
+  text-align: center;
+  background: linear-gradient(135deg, #f0f4f8, #e9ecef); /* Softer gradient */
+  border-radius: 12px; /* More rounded corners */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07); /* Softer shadow */
+  color: #495057; /* Darker, more readable text */
+}
+
+.no-books p {
+  font-size: 1.3rem; /* Larger text */
+  font-weight: 500; /* Slightly bolder */
+  margin-top: 1rem; /* Space from icon */
+  line-height: 1.6;
+}
+
+/* Optional: Add a decorative icon (e.g., using an SVG or a font icon library) */
+.no-books::before {
+  content: '📚'; /* Simple book emoji as an example */
+  font-size: 3rem; /* Larger icon */
+  margin-bottom: 1rem;
+  color: #007bff; /* Accent color for the icon */
+  opacity: 0.8;
+}
+
+.book-item-wrapper {
+  cursor: pointer; /* Indicates the item is clickable */
+  transition:
+    transform 0.2s ease-out,
+    box-shadow 0.2s ease-out;
+}
+
+.book-item-wrapper:hover,
+.book-item-wrapper:focus {
+  /* Slightly elevate the card on hover/focus for better feedback */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.book-item-wrapper:focus {
+  outline: 2px solid #007bff; /* Accessibility: outline for keyboard navigation */
+  outline-offset: 2px;
+  border-radius: 12px; /* Match the book-card border-radius if possible */
+}

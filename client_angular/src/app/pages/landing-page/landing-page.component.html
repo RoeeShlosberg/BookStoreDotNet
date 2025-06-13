@@ -1,0 +1,35 @@
+<div class="landing-container">
+  <header class="landing-header">
+    <h1>Welcome to the Great Library of Books!</h1>
+    <p class="subtitle" *ngIf="!isLoggedIn">Discover your next favorite read.</p>
+    <p class="subtitle user-greeting" *ngIf="isLoggedIn">Hello, <span class="username">{{ userName }}</span>! Discover your next favorite read.</p>
+  </header>
+
+  <nav class="navigation-buttons">
+    <button (click)="navigateToBooks()" class="action-button explore-button">Explore Books</button>
+    
+    <!-- Show Login/Register if not logged in -->
+    <ng-container *ngIf="!isLoggedIn">
+      <button (click)="navigateToLogin()" class="action-button auth-button login-button">Login</button>
+      <button (click)="navigateToRegister()" class="action-button auth-button register-button">Register</button>
+    </ng-container>
+
+    <!-- Show Logout if logged in -->
+    <button *ngIf="isLoggedIn" (click)="logout()" class="action-button-auth-button-logout-button">Logout</button>
+  </nav>
+
+  <section class="features">
+    <div class="feature-card">
+      <h2>Extensive Collection</h2>
+      <p>Browse through thousands of titles across all genres.</p>
+    </div>
+    <div class="feature-card">
+      <h2>Community Reviews</h2>
+      <p>Read and share reviews with fellow book lovers.</p>
+    </div>
+  </section>
+
+  <footer class="landing-footer">
+    <p>&copy; 2025 The Great Library of Books. All rights reserved.</p>
+  </footer>
+</div>

@@ -1,0 +1,243 @@
+/* General container for the book page */
+.book-page-container {
+  padding: 2rem;
+  margin: 0 auto; /* Center the content */
+  background: linear-gradient(to right top, #f79a9a, #5fa4e9); /* Slightly different subtle gradient */
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  min-height: 100vh; /* Ensure it takes at least the full viewport height */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Back button styling */
+.back-button {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  color: #fff;
+  background-color: #ce0b9d; /* A neutral, secondary color */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none; /* If it were an <a> tag */
+}
+
+.back-button:hover {
+  background-color: #ba6bbb;
+}
+
+/* Loading indicator styling - can be shared or specific */
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 1.3rem;
+  color: #444;
+}
+
+/* Error message styling - can be shared or specific */
+.error-message {
+  padding: 1.5rem;
+  background-color: #ffebee; /* Light pink/red for errors */
+  border: 1px solid #ef9a9a;
+  border-radius: 6px;
+  color: #c62828; /* Darker red text */
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+/* Container for the actual book details once loaded */
+.book-details-content {
+  padding: 1rem;
+  border-top: 1px solid #eee; /* Separator if back button is close */
+  margin-top: 1rem;
+}
+
+/* Message for when a book is not found (after loading, no error) */
+.no-book-found {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+  padding: 2rem;
+}
+
+/* Ensure app-book-view within this page doesn't add extra margins if not desired */
+.book-details-content app-book-view .book-card {
+  margin-bottom: 0; /* Override default margin if it exists on book-card */
+  box-shadow: none; /* Optional: remove shadow if page container has one */
+  border-left-width: 3px; /* Slightly thinner accent */
+}
+
+/* Header for navigation and actions */
+.navigation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+/* Toolbar for action buttons */
+.actions-toolbar {
+  display: flex;
+  gap: 0.75rem; /* Space between action buttons */
+}
+
+/* General styling for action buttons */
+.action-button {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  font-weight: 500;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+}
+
+/* Specific styling for the Edit button */
+.edit-button {
+  background-color: #7517d9;
+}
+
+.edit-button:hover {
+  background-color: #985adb;
+}
+
+/* Specific styling for the Delete button */
+.delete-button {
+  background-color: #dc3545; /* Red for delete */
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+/* Styling for the delete error message */
+.delete-error-message {
+  margin-top: 1rem; /* Add some space above the delete error */
+  padding: 1rem;
+  background-color: #f8d7da; /* Light red background */
+  border: 1px solid #f5c6cb; /* Red border */
+  border-radius: 6px;
+  color: #721c24; /* Dark red text */
+  text-align: center;
+  font-size: 1rem;
+}
+
+/* Edit Book Form Styling (similar to Add Book Form on books-page) */
+.edit-book-form-container {
+  background-color: rgba(255, 255, 255, 0.85); /* Slightly translucent white */
+  padding: 2rem 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  margin-top: 1.5rem; /* Space from the header/actions */
+  margin-bottom: 2.5rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.edit-book-form-container h2 {
+  color: #2c3e50; /* Dark, desaturated blue for heading */
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  font-size: 1.8em;
+}
+
+.edit-book-form .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.edit-book-form label {
+  display: block;
+  margin-bottom: 0.6rem;
+  color: #34495e; /* Slightly lighter, desaturated blue for labels */
+  font-weight: 500;
+  font-size: 0.95em;
+}
+
+.edit-book-form input[type="text"],
+.edit-book-form input[type="date"] {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ced4da; /* Light grey border */
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #495057;
+  background-color: #fff;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-sizing: border-box;
+}
+
+.edit-book-form input[type="text"]:focus,
+.edit-book-form input[type="date"]:focus {
+  border-color: #80bdff; /* Blue border on focus */
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Error messages within the form */
+.edit-book-form .form-error {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  color: #dc3545; /* Bootstrap's danger color for text */
+  text-align: left;
+  font-size: 0.85em;
+  margin-top: 0.3rem;
+}
+
+.edit-book-form .backend-error {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1.25rem;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: .25rem;
+  color: #721c24;
+  text-align: center;
+}
+
+.edit-book-form .submit-button {
+  width: 100%;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: #007bff; /* Primary blue */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+  margin-top: 1rem; /* Space above the submit button */
+}
+
+.edit-book-form .submit-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-1px);
+}
+
+.edit-book-form .submit-button:disabled {
+  background-color: #6c757d; /* Grey when disabled */
+  cursor: not-allowed;
+  transform: none;
+}
+
+.edit-book-form .form-loading p {
+  font-size: 1rem;
+  color: #007bff;
+}
+
+/* Ensure app-book-view within this page doesn't add extra margins if not desired */
+.book-details-content app-book-view .book-card {
+  margin-bottom: 0; /* Override default margin if it exists on book-card */
+  box-shadow: none; /* Optional: remove shadow if page container has one */
+  border-left-width: 3px; /* Slightly thinner accent */
+}

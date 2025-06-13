@@ -11,6 +11,18 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add CORS services
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:4200")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 // ✅ Register DbContext and connect to SQLite
 builder.Services.AddDbContext<BooksDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -41,22 +53,6 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "bearer", // must be lowercase
         BearerFormat = "JWT"
     });
-
-    // REMOVE the global security requirement
-    // c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    // {
-    //     {
-    //         new OpenApiSecurityScheme
-    //         {
-    //             Reference = new OpenApiReference
-    //             {
-    //                 Type = ReferenceType.SecurityScheme,
-    //                 Id = "Bearer"
-    //             }
-    //         },
-    //         new string[] {}
-    //     }
-    // });
 
     // Add the custom operation filter
     c.OperationFilter<AuthorizeCheckOperationFilter>();
@@ -97,6 +93,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Use CORS middleware - place it before UseAuthorization and MapControllers
+app.UseCors("AllowAngularDev");
 
 app.UseHttpsRedirection();
 

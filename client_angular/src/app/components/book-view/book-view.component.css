@@ -1,0 +1,53 @@
+/* Add component styles here */
+
+:host {
+  display: block; /* Ensures the component takes up block space for styling */
+}
+
+.book-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0,0,0,0.08);
+  padding: 20px;
+  margin-bottom: 20px; /* For spacing if used in a vertical list directly */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-left: 5px solid var(--pill-accent, #007bff); /* Accent color, fallback to blue */
+}
+
+.book-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.book-card h2 {
+  font-size: 1.6em;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-weight: 600;
+  /* A nice gradient for the title */
+  background: linear-gradient(90deg, var(--electric-violet, #8A2BE2), var(--vivid-pink, #FF007F));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.book-card .author {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 6px;
+  font-style: italic;
+}
+
+.book-card .published-date {
+  font-size: 0.9em;
+  color: #777;
+  margin-bottom: 0;
+}
+
+/* Define some CSS variables for colors if not already globally defined */
+:host {
+  --electric-violet: #8A2BE2; /* Example: Electric Violet */
+  --vivid-pink: #FF007F;      /* Example: Vivid Pink */
+  --pill-accent: #4A90E2;     /* Example: Bright Blue for accent */
+}

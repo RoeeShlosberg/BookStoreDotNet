@@ -1,0 +1,47 @@
+.not-found-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f59797 0%, #e9ecef 100%);
+  color: #343a40; /* Dark gray text */
+  min-height: 90vh; /* Ensure it takes at least the full viewport height */
+}
+
+.not-found-container h1 {
+  font-size: 6rem;
+  font-weight: bold;
+  color: #dc3545; /* Red for emphasis */
+  margin-bottom: 0.5rem;
+}
+
+.not-found-container h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #495057;
+}
+
+.not-found-container p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  max-width: 500px;
+}
+
+.home-link {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007bff; /* Primary blue */
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.home-link:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}

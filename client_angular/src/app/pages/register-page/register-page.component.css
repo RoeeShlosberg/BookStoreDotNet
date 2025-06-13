@@ -1,0 +1,122 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #28a209a4 0%, #db0000 100%);
+  padding: 40px 20px; /* Add some padding around the form container */
+  box-sizing: border-box;
+}
+
+/* General form styling */
+.register-container {
+  max-width: 420px;
+  margin: 60px auto;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  /* Vibrant gradient background */
+  background: linear-gradient(135deg, #d0d6ed 0%, #0800e4 100%);
+  text-align: center;
+  color: #ffffff; /* Default text color to white */
+}
+
+h2 {
+  color: #ffffff;
+  margin-bottom: 30px;
+  font-weight: 700;
+  font-size: 2em;
+}
+
+.form-group {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  color: #fce4ec; /* Light pink for labels */
+  font-weight: 500;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #ffb3c1; /* Border matching theme */
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.15); /* Slightly transparent white */
+  color: #ffffff; /* White text input */
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+input[type="email"]::placeholder {
+  color: #f8bbd0; /* Lighter placeholder text */
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+  border-color: #30cfd0; /* Bright teal/cyan focus */
+  background-color: rgba(255, 255, 255, 0.25);
+  outline: none;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 14px;
+  background-color: #30cfd0; /* Bright teal/cyan button */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button[type="submit"]:disabled {
+  background-color: #777777;
+  cursor: not-allowed;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background-color: #28b8b8; /* Darker teal/cyan hover */
+  transform: translateY(-2px);
+}
+
+.error-message {
+  color: #fff1f0; /* Very light red/pink for errors */
+  font-size: 0.9em;
+  margin-top: 8px;
+}
+
+.backend-error {
+  margin-top: 20px;
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.1); /* More subtle error background */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  border-radius: 8px;
+}
+
+p {
+  margin-top: 25px;
+  color: #fce4ec; /* Light pink */
+}
+
+a {
+  color: #f06292; /* Medium pink link */
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #ec407a; /* Darker pink hover */
+  text-decoration: underline;
+}

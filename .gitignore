@@ -476,3 +476,113 @@ docker-compose*
 # Swagger/OpenAPI generated files
 swagger.json
 swagger.yaml
+
+# ...existing code...
+
+# Angular Client specific
+client/node_modules/
+client/dist/
+client/.angular/
+client/.vscode/
+client/coverage/
+client/e2e/reports/
+client/*.log
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+
+# Angular build artifacts
+client/tmp/
+client/out-tsc/
+client/bazel-out/
+
+# Angular testing
+client/coverage/
+client/.nyc_output/
+client/libpeerconnection.log
+client/testem.log
+
+# Angular environment files (if they contain sensitive data)
+client/src/environments/environment.prod.ts
+
+# IDE files for Angular
+client/.idea/
+client_angular/.vscode/
+client/*.swp
+client/*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ...existing code...
+
+# .NET Server specific
+server_dotNet/bin/
+server_dotNet/obj/
+server_dotNet/.vs/
+server_dotNet/*.user
+server_dotNet/*.suo
+server_dotNet/.vscode/
+server_dotNet/appsettings.Development.json
+server_dotNet/appsettings.Local.json
+
+# Angular Client specific
+client_angular/node_modules/
+client_angular/dist/
+client_angular/.angular/
+client_angular/.vscode/
+client_angular/coverage/
+client_angular/e2e/reports/
+client_angular/*.log
+client_angular/npm-debug.log*
+client_angular/yarn-debug.log*
+client_angular/yarn-error.log*
+
+# Angular build artifacts
+client_angular/tmp/
+client_angular/out-tsc/
+client_angular/bazel-out/
+
+# Angular testing
+client_angular/coverage/
+client_angular/.nyc_output/
+client_angular/libpeerconnection.log
+client_angular/testem.log
+
+# Angular environment files (if they contain sensitive data)
+client_angular/src/environments/environment.prod.ts
+
+# IDE files
+client_angular/.idea/
+server_dotNet/.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*

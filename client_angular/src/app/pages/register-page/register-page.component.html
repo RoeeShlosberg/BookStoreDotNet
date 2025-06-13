@@ -1,0 +1,32 @@
+<div class="register-container">
+  <h2>Register</h2>
+  <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" ngModel required #username="ngModel">
+      <div *ngIf="username.invalid && (username.dirty || username.touched)" class="error-message">
+        Username is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" ngModel required minlength="6" #passwordField="ngModel">
+      <div *ngIf="passwordField.invalid && (passwordField.dirty || passwordField.touched)" class="error-message">
+        <div *ngIf="passwordField.errors?.['required']">Password is required.</div>
+        <div *ngIf="passwordField.errors?.['minlength']">Password must be at least 6 characters long.</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" ngModel required #confirmPasswordField="ngModel">
+      <div *ngIf="confirmPasswordField.invalid && (confirmPasswordField.dirty || confirmPasswordField.touched) && confirmPasswordField.errors?.['required']" class="error-message">
+        Confirming your password is required.
+      </div>
+    </div>
+    <button type="submit" [disabled]="registerForm.invalid">Register</button>
+    <div *ngIf="errorMessage" class="error-message backend-error">
+      {{ errorMessage }}
+    </div>
+  </form>
+  <p>Already have an account? <a routerLink="/login">Login here</a></p>
+</div>

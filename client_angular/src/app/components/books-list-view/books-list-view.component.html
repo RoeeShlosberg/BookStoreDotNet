@@ -1,0 +1,11 @@
+<div class="books-list-container" *ngIf="books && books.length > 0; else noBooksContent">
+  <div *ngFor="let book of books" (click)="goToBookPage(book)" class="book-item-wrapper" role="button" tabindex="0" (keydown.enter)="goToBookPage(book)">
+    <app-book-view [book]="book"></app-book-view>
+  </div>
+</div>
+
+<ng-template #noBooksContent>
+  <div class="no-books">
+    <p>No books available at the moment. Check back later!</p>
+  </div>
+</ng-template>
