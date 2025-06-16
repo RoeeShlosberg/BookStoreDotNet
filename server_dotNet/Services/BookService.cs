@@ -45,13 +45,19 @@ namespace BookStore.Services
                 Rank = book.Rank,
                 Categories = book.Categories
             };
-        }
-
-        public async Task<BookDto> CreateBookAsync(CreateBookDto dto)
+        }        public async Task<BookDto> CreateBookAsync(CreateBookDto dto)
         {
             // Validate categories
             var allowedCategories = CategoryStore.AllowedCategories;
-            if (dto.Categories == null || dto.Categories.Any(c => !allowedCategories.Contains(c)))
+            if (dto.Categories == null || !dto.Categories.Any())
+            {
+                throw new ArgumentException("Books must have at least one category.");
+            }
+            if (dto.Categories.Count > 3)
+            {
+                throw new ArgumentException("Books can have at most 3 categories.");
+            }
+            if (dto.Categories.Any(c => !allowedCategories.Contains(c)))
             {
                 throw new ArgumentException("One or more categories are invalid.");
             }
@@ -76,13 +82,19 @@ namespace BookStore.Services
                 Rank = book.Rank,
                 Categories = book.Categories
             };
-        }
-
-        public async Task<bool> UpdateBookAsync(int id, UpdateBookDto dto)
+        }        public async Task<bool> UpdateBookAsync(int id, UpdateBookDto dto)
         {
             // Validate categories
             var allowedCategories = CategoryStore.AllowedCategories;
-            if (dto.Categories == null || dto.Categories.Any(c => !allowedCategories.Contains(c)))
+            if (dto.Categories == null || !dto.Categories.Any())
+            {
+                throw new ArgumentException("Books must have at least one category.");
+            }
+            if (dto.Categories.Count > 3)
+            {
+                throw new ArgumentException("Books can have at most 3 categories.");
+            }
+            if (dto.Categories.Any(c => !allowedCategories.Contains(c)))
             {
                 throw new ArgumentException("One or more categories are invalid.");
             }
@@ -126,13 +138,19 @@ namespace BookStore.Services
                     Categories = b.Categories
                 })
                 .ToListAsync();
-        }
-
-        public async Task<BookDto> CreateBookForUserAsync(CreateBookDto dto, int userId)
+        }        public async Task<BookDto> CreateBookForUserAsync(CreateBookDto dto, int userId)
         {
             // Validate categories
             var allowedCategories = CategoryStore.AllowedCategories;
-            if (dto.Categories == null || dto.Categories.Any(c => !allowedCategories.Contains(c)))
+            if (dto.Categories == null || !dto.Categories.Any())
+            {
+                throw new ArgumentException("Books must have at least one category.");
+            }
+            if (dto.Categories.Count > 3)
+            {
+                throw new ArgumentException("Books can have at most 3 categories.");
+            }
+            if (dto.Categories.Any(c => !allowedCategories.Contains(c)))
             {
                 throw new ArgumentException("One or more categories are invalid.");
             }

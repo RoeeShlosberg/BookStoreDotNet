@@ -99,7 +99,7 @@ app.UseCors("AllowAngularDev");
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication(); // Add this line
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();  // Maps controller routes
 

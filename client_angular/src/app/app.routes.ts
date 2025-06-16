@@ -11,7 +11,7 @@ export const routes: Routes = [
   { path: '', component: LandingPageComponent },
   { path: 'books', component: BooksPageComponent, canActivate: [AuthGuard] },
   { path: 'book/:id', component: BookPageComponent, canActivate: [AuthGuard] },
-  { path: 'login', component: LoginPageComponent }, // Added route
-  { path: 'register', component: RegisterPageComponent }, // Added route
+  { path: 'login', component: LoginPageComponent },
+  { path: 'register', component: RegisterPageComponent },
   { path: '**', component: NotFoundPageComponent }, // Wildcard route for 404
 ];

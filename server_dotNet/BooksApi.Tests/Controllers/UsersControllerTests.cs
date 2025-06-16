@@ -73,9 +73,7 @@ namespace BooksApi.Tests.Controllers
             var returnedResponse = Assert.IsType<LoginResponseDto>(okResult.Value);
             Assert.Equal("testuser", returnedResponse.Username);
             Assert.Equal("fake-jwt-token", returnedResponse.Token);
-        }
-
-        [Fact]
+        }        [Fact]
         public async Task LoginUser_InvalidCredentials_ShouldReturnUnauthorized()
         {
             // Arrange
@@ -91,7 +89,7 @@ namespace BooksApi.Tests.Controllers
             var result = await _controller.LoginUser(loginDto);
 
             // Assert
-            Assert.IsType<UnauthorizedResult>(result);
+            Assert.IsType<UnauthorizedObjectResult>(result);
         }
 
         [Fact]

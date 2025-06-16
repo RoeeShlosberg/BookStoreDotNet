@@ -2,33 +2,50 @@ using BookStore.Controllers;
 using BookStore.Dtos;
 using BookStore.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Xunit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace BooksApi.Tests.Controllers
 {
     public class BooksControllerTests
     {
         private readonly Mock<IBookService> _mockBookService;
-        private readonly BooksController _controller;
-
-        public BooksControllerTests()
+        private readonly BooksController _controller;        public BooksControllerTests()
         {
             _mockBookService = new Mock<IBookService>();
             _controller = new BooksController(_mockBookService.Object);
-        }
-
-        [Fact]
+            
+            // Setup mock user claims for authorization
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, "1"),
+                new Claim(ClaimTypes.Name, "testuser")
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            
+            // Setup ControllerContext with the mocked User
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+            };
+        }[Fact]
         public async Task GetBooks_ShouldReturnOkWithBooks()
         {
             // Arrange
             var books = new List<BookDto>
             {
-                new BookDto { Id = 1, Title = "Book 1", Author = "Author 1", PublishedDate = new DateTime(2020, 1, 1) },
-                new BookDto { Id = 2, Title = "Book 2", Author = "Author 2", PublishedDate = new DateTime(2021, 1, 1) }
+                new BookDto { Id = 1, Title = "Book 1", Author = "Author 1", UploadDate = new DateTime(2020, 1, 1), Rank = 4, Categories = new List<string> { "Drama" } },
+                new BookDto { Id = 2, Title = "Book 2", Author = "Author 2", UploadDate = new DateTime(2021, 1, 1), Rank = 5, Categories = new List<string> { "Mystery" } }
             };
             
-            _mockBookService.Setup(x => x.GetAllBooksAsync()).ReturnsAsync(books);
+            _mockBookService.Setup(x => x.GetAllBooksForUserAsync(1)).ReturnsAsync(books);
 
             // Act
             var result = await _controller.GetBooks();
@@ -43,7 +60,7 @@ namespace BooksApi.Tests.Controllers
         public async Task GetBook_ExistingBook_ShouldReturnOkWithBook()
         {
             // Arrange
-            var book = new BookDto { Id = 1, Title = "Test Book", Author = "Test Author", PublishedDate = new DateTime(2023, 1, 1) };
+            var book = new BookDto { Id = 1, Title = "Test Book", Author = "Test Author", UploadDate = new DateTime(2023, 1, 1), Rank = 4, Categories = new List<string> { "Drama" } };
             _mockBookService.Setup(x => x.GetBookByIdAsync(1)).ReturnsAsync(book);
 
             // Act
@@ -66,9 +83,7 @@ namespace BooksApi.Tests.Controllers
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
-        }
-
-        [Fact]
+        }        [Fact]
         public async Task CreateBook_ValidBook_ShouldReturnCreatedAtAction()
         {
             // Arrange
@@ -76,18 +91,21 @@ namespace BooksApi.Tests.Controllers
             {
                 Title = "New Book",
                 Author = "New Author",
-                PublishedDate = new DateTime(2024, 1, 1)
+                UploadDate = new DateTime(2024, 1, 1),
+                Rank = 4,
+                Categories = new List<string> { "Drama", "Fantasy" }
             };
-            
-            var createdBook = new BookDto
+              var createdBook = new BookDto
             {
                 Id = 1,
                 Title = "New Book",
                 Author = "New Author",
-                PublishedDate = new DateTime(2024, 1, 1)
+                UploadDate = new DateTime(2024, 1, 1),
+                Rank = 4,
+                Categories = new List<string> { "Drama", "Fantasy" }
             };
             
-            _mockBookService.Setup(x => x.CreateBookAsync(createBookDto)).ReturnsAsync(createdBook);
+            _mockBookService.Setup(x => x.CreateBookForUserAsync(createBookDto, 1)).ReturnsAsync(createdBook);
 
             // Act
             var result = await _controller.CreateBook(createBookDto);
@@ -105,13 +123,13 @@ namespace BooksApi.Tests.Controllers
         public async Task CreateBook_InvalidData_ShouldReturnBadRequest()
         {
             // Arrange
-            _controller.ModelState.AddModelError("Title", "Title is required");
-
-            var createBookDto = new CreateBookDto
+            _controller.ModelState.AddModelError("Title", "Title is required");            var createBookDto = new CreateBookDto
             {
                 Title = "", // Invalid
                 Author = "Author",
-                PublishedDate = new DateTime(2024, 1, 1)
+                UploadDate = new DateTime(2024, 1, 1),
+                Rank = 3,
+                Categories = new List<string> { "Fantasy" }
             };
 
             // Act
@@ -129,7 +147,9 @@ namespace BooksApi.Tests.Controllers
             {
                 Title = "Updated Book",
                 Author = "Updated Author",
-                PublishedDate = new DateTime(2025, 1, 1)
+                UploadDate = new DateTime(2025, 1, 1),
+                Rank = 5,
+                Categories = new List<string> { "Mystery", "Sci-Fi" }
             };
             
             _mockBookService.Setup(x => x.UpdateBookAsync(1, updateBookDto)).ReturnsAsync(true);
@@ -149,7 +169,9 @@ namespace BooksApi.Tests.Controllers
             {
                 Title = "Updated Book",
                 Author = "Updated Author",
-                PublishedDate = new DateTime(2025, 1, 1)
+                UploadDate = new DateTime(2025, 1, 1),
+                Rank = 5,
+                Categories = new List<string> { "Mystery", "Sci-Fi" }
             };
             
             _mockBookService.Setup(x => x.UpdateBookAsync(999, updateBookDto)).ReturnsAsync(false);
@@ -171,7 +193,9 @@ namespace BooksApi.Tests.Controllers
             {
                 Title = "", // Invalid
                 Author = "Author",
-                PublishedDate = new DateTime(2024, 1, 1)
+                UploadDate = new DateTime(2024, 1, 1),
+                Rank = 3,
+                Categories = new List<string> { "Fantasy" }
             };
 
             // Act

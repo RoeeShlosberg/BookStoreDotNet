@@ -26,4 +26,8 @@
     <None Remove="BooksApi.Tests/**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="BooksApi.Tests" />
+  </ItemGroup>
+
 </Project>
