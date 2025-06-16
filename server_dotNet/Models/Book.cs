@@ -1,6 +1,8 @@
 // Create model for Book
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+
 namespace BookStore.Models
 {
     public class Book
@@ -16,8 +18,30 @@ namespace BookStore.Models
         [StringLength(50)]
         public string Author { get; set; }
 
-        //  PublishedDate - optional, if not provided, defaults to current date
+        // Uploaded Date - default to current date
         [DataType(DataType.Date)]
-        public DateTime? PublishedDate { get; set; } = DateTime.Now;
+        public DateTime UploadDate { get; set; } = DateTime.Now;
+
+        // Rank - 1-10
+        [Range(1, 10)]
+        [Required]
+        public int Rank { get; set; }
+
+        [Required]
+        public List<string> Categories { get; set; } = new List<string>();
+    }
+
+    public class BookUser
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        public int UserId { get; set; }
+        public User User { get; set; }
+
+        [Required]
+        public int BookId { get; set; }
+        public Book Book { get; set; }
     }
 }

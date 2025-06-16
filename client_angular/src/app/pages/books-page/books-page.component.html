@@ -9,19 +9,21 @@
       <button *ngIf="isLoggedIn" (click)="logout()" class="action-button logout-button">Logout</button> 
     </div>
   </div>
-
   <div class="search-container">
     <div class="search-input-group">
       <input type="text" [(ngModel)]="searchTerm" placeholder="Search books..." (keyup.enter)="searchBooks()" class="search-input">
       <button (click)="searchBooks()" class="action-button search-button">Search</button>
     </div>
-    <button (click)="resetSearch()" *ngIf="isSearching" class="action-button reset-button">Reset</button>
+    <button (click)="resetAll()" *ngIf="isSearching || rankFilter > 0 || categoryFilter !== 'all'" class="action-button reset-button">Reset</button>
   </div>
 
   <!-- Add New Book Form -->
   <div *ngIf="showAddBookForm && isLoggedIn" class="add-book-form-container">
     <h2>Add a New Book</h2>
-    <form [formGroup]="addBookForm" (ngSubmit)="onAddBookSubmit()" class="add-book-form">
+    <div *ngIf="categoriesLoading" class="loading-indicator">
+      <p>Loading categories...</p>
+    </div>
+    <form *ngIf="!categoriesLoading" [formGroup]="addBookForm" (ngSubmit)="onAddBookSubmit()" class="add-book-form">
       <div class="form-group">
         <label for="title">Title</label>
         <input id="title" type="text" formControlName="title" placeholder="Enter book title">
@@ -41,13 +43,42 @@
       </div>
 
       <div class="form-group">
-        <label for="publishedDate">Published Date</label>
-        <input id="publishedDate" type="date" formControlName="publishedDate">
-        <div *ngIf="addBookForm.get('publishedDate')?.invalid && (addBookForm.get('publishedDate')?.dirty || addBookForm.get('publishedDate')?.touched)" class="error-message">
-          <span *ngIf="addBookForm.get('publishedDate')?.errors?.['required']">Published Date is required.</span>
+        <label for="uploadDate">When did you read?</label>
+        <input id="uploadDate" type="date" formControlName="uploadDate">
+        <div *ngIf="addBookForm.get('uploadDate')?.invalid && (addBookForm.get('uploadDate')?.dirty || addBookForm.get('uploadDate')?.touched)" class="error-message">
+          <span *ngIf="addBookForm.get('uploadDate')?.errors?.['required']">Published Date is required.</span>
         </div>
       </div>
 
+      <div class="form-group">
+        <label>Rate the book</label>
+        <div class="star-rating">
+          <ng-container *ngFor="let star of stars; let i = index">
+            <span
+              class="star"
+              [class.filled]="i < (hoveredStar || addBookForm.get('rank')?.value)"
+              (click)="setRank(i + 1)"
+              (mouseover)="hoverStars(i + 1)"
+              (mouseleave)="hoverStars(0)"
+              >&#9733;</span>
+          </ng-container>
+        </div>
+        <div *ngIf="addBookForm.get('rank')?.invalid && (addBookForm.get('rank')?.dirty || addBookForm.get('rank')?.touched)" class="error-message">
+          <span *ngIf="addBookForm.get('rank')?.errors?.['required']">Rating is required.</span>
+          <span *ngIf="addBookForm.get('rank')?.errors?.['min']">Rating must be at least 1.</span>
+          <span *ngIf="addBookForm.get('rank')?.errors?.['max']">Rating cannot exceed 10.</span>
+        </div>
+      </div>      <div class="form-group">
+        <label>Categories <span class="required">*</span></label>
+        <app-category-dropdown 
+          [allowedCategories]="allowedCategories"
+          [categoryControls]="categoryControls"
+          [isInvalid]="addBookForm.get('categories')?.invalid || false"
+          [isTouched]="addBookForm.get('categories')?.touched || false"
+          (categoriesChanged)="addBookForm.get('categories')?.markAsTouched()"
+        ></app-category-dropdown>
+      </div>
+        
       <div *ngIf="addBookError" class="error-message backend-error">
         {{ addBookError }}
       </div>
@@ -58,17 +89,99 @@
     </form>
   </div>
 
+  <!-- Edit Book Form -->
+  <div *ngIf="showEditBookForm && isLoggedIn" class="edit-book-form-container">
+    <h2>Edit Book</h2>
+    <form [formGroup]="editBookForm" (ngSubmit)="onEditBookSubmit()" class="edit-book-form">
+      <div class="form-group">
+        <label for="edit-title">Title</label>
+        <input id="edit-title" type="text" formControlName="title" placeholder="Enter book title">
+        <div *ngIf="editBookForm.get('title')?.invalid && (editBookForm.get('title')?.dirty || editBookForm.get('title')?.touched)" class="error-message">
+          <span *ngIf="editBookForm.get('title')?.errors?.['required']">Title is required.</span>
+          <span *ngIf="editBookForm.get('title')?.errors?.['minlength']">Title must be at least 3 characters long.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="edit-author">Author</label>
+        <input id="edit-author" type="text" formControlName="author" placeholder="Enter author's name">
+        <div *ngIf="editBookForm.get('author')?.invalid && (editBookForm.get('author')?.dirty || editBookForm.get('author')?.touched)" class="error-message">
+          <span *ngIf="editBookForm.get('author')?.errors?.['required']">Author is required.</span>
+          <span *ngIf="editBookForm.get('author')?.errors?.['minlength']">Author must be at least 3 characters long.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="edit-uploadDate">When did you read?</label>
+        <input id="edit-uploadDate" type="date" formControlName="uploadDate">
+        <div *ngIf="editBookForm.get('uploadDate')?.invalid && (editBookForm.get('uploadDate')?.dirty || editBookForm.get('uploadDate')?.touched)" class="error-message">
+          <span *ngIf="editBookForm.get('uploadDate')?.errors?.['required']">Published Date is required.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Rate the book</label>
+        <div class="star-rating">
+          <ng-container *ngFor="let star of stars; let i = index">
+            <span
+              class="star"
+              [class.filled]="i < (hoveredStar || editBookForm.get('rank')?.value)"
+              (click)="editBookForm.get('rank')?.setValue(i + 1); editBookForm.get('rank')?.markAsTouched()"
+              (mouseover)="hoverStars(i + 1)"
+              (mouseleave)="hoverStars(0)"
+              >&#9733;</span>
+          </ng-container>
+        </div>
+        <div *ngIf="editBookForm.get('rank')?.invalid && (editBookForm.get('rank')?.dirty || editBookForm.get('rank')?.touched)" class="error-message">
+          <span *ngIf="editBookForm.get('rank')?.errors?.['required']">Rating is required.</span>
+          <span *ngIf="editBookForm.get('rank')?.errors?.['min']">Rating must be at least 1.</span>
+          <span *ngIf="editBookForm.get('rank')?.errors?.['max']">Rating cannot exceed 10.</span>
+        </div>
+      </div>      <div class="form-group">
+        <label>Categories <span class="required">*</span></label>
+        <app-category-dropdown 
+          [allowedCategories]="allowedCategories"
+          [categoryControls]="editCategoryControls"
+          [isInvalid]="editBookForm.get('categories')?.invalid || false"
+          [isTouched]="editBookForm.get('categories')?.touched || false"
+          (categoriesChanged)="editBookForm.get('categories')?.markAsTouched()"
+        ></app-category-dropdown>
+      </div>
+
+      <div *ngIf="editBookError" class="error-message backend-error">
+        {{ editBookError }}
+      </div>
+
+      <button type="submit" [disabled]="editBookForm.invalid || isLoading" class="submit-button">
+        {{ isLoading ? 'Saving...' : 'Save Changes' }}
+      </button>
+      <button type="button" (click)="closeEditBookForm()" class="cancel-button">Cancel</button>
+    </form>
+  </div>  <div class="filter-group">
+    <label for="rankFilter">Filter by rating:</label>
+    <select id="rankFilter" [(ngModel)]="rankFilter" (change)="applyRankFilter()">
+      <option value="0">All</option>
+      <option *ngFor="let r of [1,2,3,4,5,6,7,8,9,10]" [value]="r">{{ r }}+</option>
+    </select>
+    
+    <label for="categoryFilter" class="category-filter-label">Filter by category:</label>
+    <select id="categoryFilter" [(ngModel)]="categoryFilter" (change)="applyRankFilter()">
+      <option value="all">All Categories</option>
+      <option *ngFor="let cat of allowedCategories" [value]="cat">{{ cat }}</option>
+    </select>
+  </div>
+
   <div *ngIf="isLoading && !showAddBookForm" class="loading-indicator">
-    <p>Loading books</p> <!-- Removed animated dots from here, CSS handles it -->
+    <p>Loading books</p>
   </div>
   <div *ngIf="error && !isLoading" class="error-message-container">
     <p>{{ error }}</p>
     <button (click)="retryFetchBooks()" class="retry-button">Retry</button>
   </div>
 
-  <app-books-list-view *ngIf="!isLoading && !error && books.length > 0" [books]="books"></app-books-list-view>
+  <app-books-list-view *ngIf="!isLoading && !error && filteredBooks.length > 0" [books]="filteredBooks"></app-books-list-view>
 
-  <div *ngIf="!isLoading && !error && books.length === 0 && !showAddBookForm" class="no-books-message">
+  <div *ngIf="!isLoading && !error && filteredBooks.length === 0 && !showAddBookForm" class="no-books-message">
     No books available at the moment. <span *ngIf="isLoggedIn">Try adding one!</span>
   </div>
 </div>

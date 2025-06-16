@@ -164,7 +164,8 @@
 }
 
 .edit-book-form input[type="text"],
-.edit-book-form input[type="date"] {
+.edit-book-form input[type="date"],
+.edit-book-form input[type="number"] {
   width: 100%;
   padding: 0.8rem 1rem;
   border: 1px solid #ced4da; /* Light grey border */
@@ -177,6 +178,7 @@
 }
 
 .edit-book-form input[type="text"]:focus,
+.edit-book-form input[type="number"]:focus,
 .edit-book-form input[type="date"]:focus {
   border-color: #80bdff; /* Blue border on focus */
   outline: 0;
@@ -233,6 +235,40 @@
 .edit-book-form .form-loading p {
   font-size: 1rem;
   color: #007bff;
+}
+
+/* Star rating component styling */
+.star-rating {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  font-size: 2.5rem;
+  cursor: pointer;
+  margin: 0.5rem 0;
+  user-select: none;
+}
+
+.star {
+  color: #bbb;
+  transition: color 0.2s, transform 0.1s;
+  padding: 0 2px;
+}
+
+.star.filled {
+  color: #ffc107;
+  text-shadow: 0 2px 8px #ffecb3;
+  transform: scale(1.15);
+}
+
+.star:hover,
+.star:focus {
+  color: #ff9800;
+  outline: none;
+  transform: scale(1.2);
+}
+
+.star-rating:focus .star {
+  outline: 2px solid #007bff;
 }
 
 /* Ensure app-book-view within this page doesn't add extra margins if not desired */

@@ -3,6 +3,8 @@ using BookStore.Dtos;
 using BookStore.Models;
 using BookStore.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Moq;
 using Xunit;
 
 namespace BooksApi.Tests.Services
@@ -19,7 +21,8 @@ namespace BooksApi.Tests.Services
 
         private UserService CreateUserService(BooksDbContext context)
         {
-            return new UserService(context);
+            var configMock = new Mock<IConfiguration>();
+            return new UserService(context, configMock.Object);
         }
 
         [Fact]

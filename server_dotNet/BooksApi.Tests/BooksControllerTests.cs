@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using BookStore.Controllers;
 using BookStore.Services;
 using BookStore.Dtos;
+using System.Security.Claims;
 
 namespace BooksApi.Tests
 {
@@ -16,9 +17,25 @@ namespace BooksApi.Tests
         {
             _mockBookService = new Mock<IBookService>();
             _controller = new BooksController(_mockBookService.Object);
-        }
-
-        [Fact]
+            
+            // Setup the User Claims identity for the controller
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, "1"),
+                new Claim(ClaimTypes.Name, "testuser")
+            };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            
+            // Set the User property on the controller
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext
+                {
+                    User = claimsPrincipal
+                }
+            };
+        }        [Fact]
         public async Task GetBooks_ShouldReturnOkResult()
         {
             // Arrange
@@ -27,7 +44,7 @@ namespace BooksApi.Tests
                 new BookDto { Id = 1, Title = "Book 1", Author = "Author 1" },
                 new BookDto { Id = 2, Title = "Book 2", Author = "Author 2" }
             };
-            _mockBookService.Setup(s => s.GetAllBooksAsync()).ReturnsAsync(books);
+            _mockBookService.Setup(s => s.GetAllBooksForUserAsync(1)).ReturnsAsync(books);
 
             // Act
             var result = await _controller.GetBooks();

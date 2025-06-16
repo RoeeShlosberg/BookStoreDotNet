@@ -2,22 +2,23 @@ import { Component, OnInit, OnDestroy } from '@angular/core'; // Import OnDestro
 import { CommonModule } from '@angular/common';
 import { Book } from '../../models/book.model';
 import { BookService, CreateBookDto } from '../../services/book.service';
+import { CategoryService } from '../../services/category.service';
 import { AuthService } from '../../services/auth.service'; // Import AuthService
 import { BooksListViewComponent } from '../../components/books-list-view/books-list-view.component';
+import { CategoryDropdownComponent } from '../../components/category-dropdown/category-dropdown.component';
 import { Router } from '@angular/router';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormsModule, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs'; // Import Subscription
 
 @Component({
   selector: 'app-books-page',
   standalone: true,
-  imports: [CommonModule, BooksListViewComponent, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, BooksListViewComponent, ReactiveFormsModule, FormsModule, CategoryDropdownComponent],
   templateUrl: './books-page.component.html',
   styleUrl: './books-page.component.css'
 })
 export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDestroy
-  books: Book[] = [];
-  isLoading: boolean = true;
+  books: Book[] = [];  isLoading: boolean = true;
   error: string | null = null;
   showAddBookForm: boolean = false;
   addBookForm: FormGroup;
@@ -26,21 +27,43 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
   isSearching: boolean = false;
   searchTerm: string = '';
   private authSubscription!: Subscription;
+  stars: number[] = Array(10).fill(0);
+  hoveredStar: number = 0;
+  rankFilter: number = 0;
+  categoryFilter: string = 'all';
+  filteredBooks: Book[] = [];
+  allowedCategories: string[] = [];
+  categoriesLoading: boolean = false; // <-- Added flag for categories loading
+  editBookForm: FormGroup;
+  showEditBookForm: boolean = false;
+  editingBookId: number | null = null;
+  editBookError: string | null = null;
 
   constructor(
     private bookService: BookService, 
+    private categoryService: CategoryService,
     private router: Router,
     private authService: AuthService // Inject AuthService
     ) {
     this.addBookForm = new FormGroup({
       title: new FormControl('', [Validators.required, Validators.minLength(3)]),
       author: new FormControl('', [Validators.required, Validators.minLength(3)]),
-      publishedDate: new FormControl('', Validators.required)
+      uploadDate: new FormControl('', Validators.required),
+      rank: new FormControl('', [Validators.required, Validators.min(1), Validators.max(10)]),
+      categories: new FormArray([], Validators.required)
+    });
+    this.editBookForm = new FormGroup({
+      title: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      author: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      uploadDate: new FormControl('', Validators.required),
+      rank: new FormControl('', [Validators.required, Validators.min(1), Validators.max(10)]),
+      categories: new FormArray([], Validators.required)
     });
   } // Initialize form group for adding a new book
 
   ngOnInit(): void {    
     this.fetchBooks();
+    this.fetchCategories();
     this.authSubscription = this.authService.isAuthenticated$.subscribe(status => {
       this.isLoggedIn = status;
       if (!status && this.showAddBookForm) {
@@ -59,15 +82,14 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
     this.authService.logout();
     this.router.navigate(['/']); // Navigate to landing page after logout
   }
-
   fetchBooks(): void { // Renamed and made public for retry
     this.isLoading = true; // Set loading true at the start of fetch
     this.error = null; // Reset error on new fetch attempt
     this.bookService.getBooks().subscribe({
       next: (data) => {
-        console.log('Books fetched successfully:', data);
-        
-        this.books = data;
+        // Ensure every book has a categories array (for type safety)
+        this.books = data.map(book => ({ ...book, categories: book.categories ?? [] }));
+        this.applyRankFilter(); // This will now apply both rank and category filters
         this.isLoading = false;
       },
       error: (err) => {
@@ -93,29 +115,57 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
     }
     this.showAddBookForm = !this.showAddBookForm;
     this.addBookError = null; // Clear any previous errors
-    if (!this.showAddBookForm) {
+    if (this.showAddBookForm) {
+      // Always re-initialize categories FormArray when showing the form
+      const formArray = this.addBookForm.get('categories') as FormArray;
+      formArray.clear();
+      this.allowedCategories.forEach(() => formArray.push(new FormControl(false)));
+    } else {
       this.addBookForm.reset(); // Reset form if hiding
     }
   }
 
+  fetchCategories(): void {
+    this.categoriesLoading = true; // <-- Set loading true when fetching categories
+    this.categoryService.getCategories().subscribe({
+      next: (cats) => {
+        this.allowedCategories = cats;
+        // Reset FormArray
+        const formArray = this.addBookForm.get('categories') as FormArray;
+        formArray.clear();
+        cats.forEach(() => formArray.push(new FormControl(false)));
+        this.categoriesLoading = false; // <-- Set loading false on success
+      },
+      error: () => {
+        this.allowedCategories = [];
+        this.categoriesLoading = false; // <-- Set loading false on error
+      }
+    });
+  }
   onAddBookSubmit(): void {
-    if (this.addBookForm.invalid) {
-      this.addBookError = 'Please correct the errors in the form.';
-      // Mark all fields as touched to display validation messages
+    const selectedCats = this.selectedCategories();
+    if (this.addBookForm.invalid || selectedCats.length === 0 || selectedCats.length > 3) {
+      if (selectedCats.length === 0) {
+        this.addBookError = 'Please select at least one category.';
+      } else if (selectedCats.length > 3) {
+        this.addBookError = 'Please select at most 3 categories.';
+      } else {
+        this.addBookError = 'Please correct the errors in the form.';
+      }
       Object.values(this.addBookForm.controls).forEach(control => {
         control.markAsTouched();
       });
       return;
     }
     this.addBookError = null;
-    const newBook: CreateBookDto = {
+    const newBook: any = {
       title: this.addBookForm.value.title,
       author: this.addBookForm.value.author,
-      // Ensure publishedDate is in the correct format if necessary, e.g., ISO string
-      publishedDate: new Date(this.addBookForm.value.publishedDate) // Sending as Date object
+      uploadDate: this.addBookForm.value.uploadDate ? new Date(this.addBookForm.value.uploadDate) : null,
+      rank: this.addBookForm.value.rank,
+      categories: selectedCats
     };
-
-    this.isLoading = true; // Show loading indicator for the page or a specific one for the form
+    this.isLoading = true;
     this.bookService.addBook(newBook).subscribe({
       next: (addedBook) => {
         console.log('Book added successfully', addedBook);
@@ -126,20 +176,81 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
       },
       error: (err) => {
         console.error('Error adding book:', err);
-        if (err.error && typeof err.error === 'string') {
-          this.addBookError = err.error;
-        } else if (err.error && err.error.message && typeof err.error.message === 'string') {
-          this.addBookError = err.error.message;
-        } else if (err.message) {
-          this.addBookError = err.message;
-        } else {
-          this.addBookError = 'Failed to add book. Please try again.';
-        }
+        this.addBookError = err?.error?.error || err?.error?.message || err?.message || 'Failed to add book. Please try again.';
         this.isLoading = false;
       }
     });
   }
 
+  openEditBookForm(book: Book): void {
+    this.showEditBookForm = true;
+    this.editingBookId = book.id;
+    this.editBookError = null;
+    this.editBookForm.patchValue({
+      title: book.title,
+      author: book.author,
+      uploadDate: book.uploadDate ? (new Date(book.uploadDate)).toISOString().substring(0, 10) : '',
+      rank: book.rank
+    });
+    // Set categories
+    const formArray = this.editBookForm.get('categories') as FormArray;
+    formArray.clear();
+    this.allowedCategories.forEach(cat => {
+      formArray.push(new FormControl(book.categories?.includes(cat)));
+    });
+  }
+
+  closeEditBookForm(): void {
+    this.showEditBookForm = false;
+    this.editingBookId = null;
+    this.editBookForm.reset();
+  }
+  onEditBookSubmit(): void {
+    const selectedCats = this.selectedEditCategories();
+    if (this.editBookForm.invalid || selectedCats.length === 0 || selectedCats.length > 3) {
+      if (selectedCats.length === 0) {
+        this.editBookError = 'Please select at least one category.';
+      } else if (selectedCats.length > 3) {
+        this.editBookError = 'Please select at most 3 categories.';
+      } else {
+        this.editBookError = 'Please correct the errors in the form.';
+      }
+      Object.values(this.editBookForm.controls).forEach(control => {
+        control.markAsTouched();
+      });
+      return;
+    }
+    this.editBookError = null;
+    const updatedBook: any = {
+      title: this.editBookForm.value.title,
+      author: this.editBookForm.value.author,
+      uploadDate: this.editBookForm.value.uploadDate ? new Date(this.editBookForm.value.uploadDate) : null,
+      rank: this.editBookForm.value.rank,
+      categories: selectedCats
+    };
+    if (this.editingBookId != null) {
+      this.isLoading = true;
+      this.bookService.updateBook(this.editingBookId, updatedBook).subscribe({
+        next: () => {
+          this.fetchBooks();
+          this.closeEditBookForm();
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.editBookError = err?.error?.error || err?.error?.message || err?.message || 'Failed to update book. Please try again.';
+          this.isLoading = false;
+        }
+      });
+    }
+  }
+
+  selectedCategories(): string[] {
+    return this.allowedCategories.filter((cat, i) => (this.addBookForm.get('categories') as FormArray).at(i).value);
+  }
+
+  selectedEditCategories(): string[] {
+    return this.allowedCategories.filter((cat, i) => (this.editBookForm.get('categories') as FormArray).at(i).value);
+  }
   searchBooks(): void {
     if (!this.searchTerm.trim()) {
       this.resetSearch();
@@ -150,7 +261,9 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
     this.isSearching = true;
     this.bookService.searchBooks(this.searchTerm).subscribe({
       next: (data) => {
-        this.books = data;
+        // Ensure every book has a categories array (for type safety)
+        this.books = data.map(book => ({ ...book, categories: book.categories ?? [] }));
+        this.applyRankFilter(); // Apply both rank and category filters to search results
         this.isLoading = false;
       },
       error: (err) => {
@@ -159,11 +272,64 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
         this.isLoading = false;
       }
     });
-  }
-
-  resetSearch(): void {
+  }  resetSearch(): void {
     this.searchTerm = '';
     this.isSearching = false;
+    // Don't reset filters, just refetch books and apply existing filters
     this.fetchBooks();
+  }
+
+  resetFilters(): void {
+    this.rankFilter = 0;
+    this.categoryFilter = 'all';
+    this.applyRankFilter();
+  }
+  
+  resetAll(): void {
+    this.searchTerm = '';
+    this.isSearching = false;
+    this.rankFilter = 0;
+    this.categoryFilter = 'all';
+    this.fetchBooks();
+  }
+
+  setRank(rank: number): void {
+    this.addBookForm.get('rank')?.setValue(rank);
+    this.addBookForm.get('rank')?.markAsTouched();
+  }
+
+  hoverStars(rank: number): void {
+    this.hoveredStar = rank;
+  }
+  applyRankFilter(): void {
+    let filtered = this.books;
+    
+    // Apply rank filter if set
+    if (this.rankFilter > 0) {
+      filtered = filtered.filter(book => book.rank >= this.rankFilter);
+    }
+    
+    // Apply category filter if not set to 'all'
+    if (this.categoryFilter !== 'all') {
+      filtered = filtered.filter(book => 
+        book.categories && book.categories.includes(this.categoryFilter)
+      );
+    }
+    
+    this.filteredBooks = filtered;
+  }
+
+  get categoriesFormArray(): FormArray {
+    return this.addBookForm.get('categories') as FormArray;
+  }
+
+  get categoryControls(): FormControl[] {
+    const arr = this.addBookForm.get('categories');
+    return (arr && arr instanceof FormArray) ? (arr.controls as FormControl[]) : [];
+  }
+
+  get editCategoryControls(): FormControl[] {
+    const arr = this.editBookForm.get('categories');
+    return (arr && arr instanceof FormArray) ? (arr.controls as FormControl[]) : [];
   }
 }

@@ -1,7 +1,11 @@
 <div class="book-card" *ngIf="book">
   <h2>{{ book.title }}</h2>
+  <div class="categories-list" *ngIf="book.categories && book.categories.length">
+    <span class="categories-text">{{ book.categories.join(', ') }}</span>
+  </div>
   <p class="author">Author: {{ book.author }}</p>
-  <p class="published-date">Published: {{ book.publishedDate | date: 'longDate' }}</p>
+  <p class="upload-date">Date: {{ book.uploadDate | date: 'longDate' }}</p>
+  <p class="rank">{{ book.rank }}/10</p>
 </div>
 <div *ngIf="!book" class="no-book-data">
   <p>No book data provided.</p>

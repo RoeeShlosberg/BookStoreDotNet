@@ -43,11 +43,40 @@
       </div>
 
       <div class="form-group">
-        <label for="edit-publishedDate">Published Date</label>
-        <input id="edit-publishedDate" type="date" formControlName="publishedDate">
-        <div *ngIf="editBookForm.get('publishedDate')?.invalid && (editBookForm.get('publishedDate')?.dirty || editBookForm.get('publishedDate')?.touched)" class="error-message form-error">
-          <span *ngIf="editBookForm.get('publishedDate')?.errors?.['required']">Published Date is required.</span>
+        <label for="edit-uploadDate">Date</label>
+        <input id="edit-uploadDate" type="date" formControlName="uploadDate">
+        <div *ngIf="editBookForm.get('uploadDate')?.invalid && (editBookForm.get('uploadDate')?.dirty || editBookForm.get('uploadDate')?.touched)" class="error-message form-error">
+          <span *ngIf="editBookForm.get('uploadDate')?.errors?.['required']">Published Date is required.</span>
         </div>
+      </div>      <div class="form-group">
+        <label for="edit-rank">Rate the book</label>
+        <div class="star-rating">
+          <ng-container *ngFor="let star of stars; let i = index">
+            <span
+              class="star"
+              [class.filled]="i < (hoveredEditStar || editBookForm.get('rank')?.value)"
+              (click)="setEditRank(i + 1)"
+              (mouseover)="hoverEditStars(i + 1)"
+              (mouseleave)="hoverEditStars(0)"
+              >&#9733;</span>
+          </ng-container>
+        </div>
+        <div *ngIf="editBookForm.get('rank')?.invalid && (editBookForm.get('rank')?.dirty || editBookForm.get('rank')?.touched)" class="error-message form-error">
+          <span *ngIf="editBookForm.get('rank')?.errors?.['required']">Rating is required.</span>
+          <span *ngIf="editBookForm.get('rank')?.errors?.['min']">Rating must be at least 1.</span>
+          <span *ngIf="editBookForm.get('rank')?.errors?.['max']">Rating cannot exceed 10.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Categories <span class="required">*</span></label>
+        <app-category-dropdown 
+          [allowedCategories]="allowedCategories"
+          [categoryControls]="editCategoryControls"
+          [isInvalid]="editBookForm.get('categories')?.invalid || false"
+          [isTouched]="editBookForm.get('categories')?.touched || false"
+          (categoriesChanged)="editBookForm.get('categories')?.markAsTouched()"
+        ></app-category-dropdown>
       </div>
 
       <div *ngIf="editError" class="error-message backend-error">

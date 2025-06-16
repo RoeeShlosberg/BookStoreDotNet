@@ -39,10 +39,18 @@
   font-style: italic;
 }
 
-.book-card .published-date {
+.book-card .uploade-date {
   font-size: 0.9em;
   color: #777;
   margin-bottom: 0;
+}
+
+.book-card .rank {
+  font-size: 1.2em;
+  /* Using a bold dark gold color for rank */
+  color: #997e25; /* Gold color */
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 /* Define some CSS variables for colors if not already globally defined */
@@ -50,4 +58,18 @@
   --electric-violet: #8A2BE2; /* Example: Electric Violet */
   --vivid-pink: #FF007F;      /* Example: Vivid Pink */
   --pill-accent: #4A90E2;     /* Example: Bright Blue for accent */
+}
+
+.categories-list {
+  margin-bottom: 10px;
+}
+
+.categories-text {
+  color: #2a75c4;
+  font-size: 0.95rem;
+  font-style: italic;
+  background-color: #f0f7ff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-block;
 }

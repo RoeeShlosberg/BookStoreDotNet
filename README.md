@@ -1,6 +1,8 @@
 # 📚 BookStore Application
 
-🚀 A full-stack bookstore app built to demonstrate modern web development with a robust .NET 8 backend and a sleek Angular 17 frontend. Includes authentication, CRUD operations, unit tests, and responsive UI design. This project was created to expand my experience with the .NET ecosystem before moving to a React + Node.js stack.
+🚀 A full-stack bookstore app built to demonstrate modern web development with a robust .NET 8 backend and a sleek Angular 17 frontend. Includes authentication, user-specific libraries, book categories, ratings, comprehensive testing, and a full CI pipeline with GitHub Actions.
+
+This project has evolved from a simple CRUD application to a more feature-rich platform, showcasing advanced concepts in both backend and frontend development.
 
 ---
 
@@ -8,157 +10,111 @@
 
 ```
 📁 BookStore/
-├── 🖥️ server_dotNet/          # .NET 8 Web API backend
-└── 🌐 client_angular/         # Angular 17 frontend
+├── 🖥️ server_dotNet/          # .NET 8 Web API Backend
+│   ├── Controllers/          # API endpoints (Books, Users, Categories)
+│   ├── Services/             # Business logic
+│   ├── Data/                 # EF Core DbContext and migrations
+│   ├── Models/               # C# entity models (Book, User, Category, Rating)
+│   └── BooksApi.Tests/       # xUnit tests for services and controllers
+├── 🌐 client_angular/         # Angular 17 Frontend
+│   ├── src/app/
+│   │   ├── components/       # Reusable UI components (e.g., book card, navbar)
+│   │   ├── pages/            # Main views (e.g., home, login, book details)
+│   │   ├── services/         # Services for API communication and auth
+│   │   └── guards/           # Route guards for authentication
+└── ⚙️ .github/workflows/      # GitHub Actions CI workflow
 ```
 
 ---
 
 ## 🖥️ .NET 8 REST API Backend
 
-### 🛠️ Technologies Used
-- .NET 8 + ASP.NET Core Web API
-- Entity Framework Core + SQLite
-- JWT Authentication
-- Swagger for API docs
-- xUnit for unit testing
+The backend is a powerful and secure REST API built with ASP.NET Core 8, providing all the necessary functionality for the BookStore application.
 
-### 🔧 Setup Instructions
+### 🛠️ Key Technologies & Features
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/BookStore.git
-   cd BookStore/server_dotNet
-   ```
-
-2. **Update database connection**
-   Edit `appsettings.json`:
-   ```json
-   "ConnectionStrings": {
-     "DefaultConnection": "Data Source=books.db"
-   }
-   ```
-
-3. **Run database migrations**
-   ```bash
-   dotnet ef database update
-   ```
-
-4. **Run the backend**
-   ```bash
-   dotnet run
-   ```
-   - API runs at: http://localhost:5000
-   - Swagger docs: http://localhost:5000/swagger
+-   **.NET 8 & ASP.NET Core Web API**: For building high-performance, cross-platform APIs.
+-   **Entity Framework Core & SQLite**: For data access and database management.
+-   **JWT Authentication & Authorization**: Secure endpoints with JSON Web Tokens.
+-   **Repository & Service Pattern**: Cleanly separates data access from business logic.
+-   **Dependency Injection**: Loosely coupled and maintainable code.
+-   **Swagger/OpenAPI**: Interactive API documentation.
+-   **xUnit**: Comprehensive unit test coverage for services and controllers.
+-   **GitHub Actions CI**: Automated build and test pipeline.
 
 ### 🔐 API Endpoints
 
-**Auth**
-- `POST /api/auth/register` – Register new user
-- `POST /api/auth/login` – Login and get JWT
+**Users & Authentication (`/api/Users`)**
 
-**Books**
-- `GET /api/books` – Get all books
-- `GET /api/books/{id}` – Get book by ID
-- `POST /api/books` – Add a book (auth required)
-- `PUT /api/books/{id}` – Edit a book (auth required)
-- `DELETE /api/books/{id}` – Delete a book (auth required)
+-   `POST /register`: Creates a new user account.
+-   `POST /login`: Authenticates a user and returns a JWT.
 
-### ✅ Unit Testing (xUnit)
+**Books (`/api/Books`)**
 
-Covers:
-- Auth services (login, JWT, hashing)
-- Book service (CRUD, validation)
-- Controllers (status codes, auth, errors)
+-   `GET /`: Retrieves a list of all books, including their category and average rating.
+-   `GET /{id}`: Fetches a single book by its ID.
+-   `POST /`: Adds a new book to the collection (Authentication Required).
+-   `PUT /{id}`: Updates an existing book (Authentication Required).
+-   `DELETE /{id}`: Removes a book (Authentication Required).
 
-Run tests:
+**Categories (`/api/Categories`)**
+
+-   `GET /`: Returns a list of all available book categories.
+
+### ✅ Testing & CI
+
+A robust suite of unit tests built with xUnit ensures the reliability of the business logic. The tests cover:
+
+-   **Service Layer**: Verifies all CRUD operations, user registration, and password hashing.
+-   **Controller Layer**: Ensures correct HTTP status codes, route protection, and error handling.
+
+**Continuous Integration (CI)** is handled by GitHub Actions. The workflow in `.github/workflows/dotnet.yml` automatically triggers on every push to the `main` branch to build the solution and run the full test suite, guaranteeing that new changes don't break existing functionality.
+
+To run tests locally:
+
 ```bash
 cd server_dotNet
 dotnet test
-```
-
-Code coverage:
-```bash
-dotnet test --collect:"XPlat Code Coverage"
 ```
 
 ---
 
 ## 🌐 Angular 17 Frontend
 
-### 🧰 Technologies Used
-- Angular 17 + TypeScript
-- Angular Material
-- RxJS
-- JWT client-side integration
-- Responsive design
+The frontend is a modern, responsive single-page application (SPA) built with Angular 17, offering a seamless and interactive user experience.
 
-### 🔧 Setup Instructions
+### 🧰 Key Technologies & Features
 
-1. **Navigate to frontend**
-   ```bash
-   cd BookStore/client_angular
-   ```
+-   **Angular 17 & TypeScript**: A powerful framework for building dynamic and maintainable web applications.
+-   **Angular Material**: A suite of high-quality UI components for a clean and professional look.
+-   **RxJS**: For managing asynchronous operations and state.
+-   **Component-Based Architecture**: Organized into pages, reusable components, services, and guards.
+-   **Lazy Loading**: For optimized performance, loading feature modules on demand.
+-   **JWT Client-Side Handling**: Securely stores and sends JWTs for authenticated API requests using an HTTP Interceptor.
+-   **Route Guards**: Protects routes like the user's personal library, accessible only to logged-in users.
+-   **Responsive Design**: Adapts beautifully to various screen sizes, from mobile to desktop.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### ✨ User Experience Flow
 
-3. **Set API URL**
-   In `src/environments/environment.ts`:
-   ```typescript
-   export const environment = {
-     production: false,
-     apiUrl: 'http://localhost:5000/api'
-   };
-   ```
+1.  **Register & Login**: Users can create an account and log in to access protected features.
+2.  **Browse Books**: The main page displays a gallery of all available books.
+3.  **View Details**: Clicking a book shows its full details, including its assigned **category** and user **ratings**.
+4.  **Personal Library**: Authenticated users can add, edit, or remove books from their collection.
 
-4. **Run the app**
-   ```bash
-   ng serve
-   ```
-   App runs at: http://localhost:4200
+### 🔧 Setup & Running
 
-### 🎯 Features
-- Book browsing & searching
-- JWT-based login/register
-- Auth-guarded admin features
-- Mobile-first responsive UI
-- Angular Material components
-- Lazy-loading & standalone components
-
-### 🧪 Angular Testing
-
-Includes:
-- Unit tests for services & components
-- Basic E2E flows
-- UI rendering + validation
-
-Run tests:
-```bash
-ng test
-```
-
-With coverage:
-```bash
-ng test --code-coverage
-```
-
----
-
-## ⚙️ Dev Workflow
-
-1. Start backend (`dotnet watch run`)
-2. Start frontend (`ng serve`)
-3. Hot reload in both environments
-
-
-
-## 👋 Final Notes
-
-This project was built to get hands-on with .NET 8 + Angular 17 and simulate a real-world full-stack app with authentication, protected routes, testing, and database integration.
-
-Feel free to fork, clone, or contribute!
+1.  **Navigate to the frontend directory**:
+    ```bash
+    cd client_angular
+    ```
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+3.  **Run the development server**:
+    ```bash
+    ng serve
+    ```
+    The application will be available at `http://localhost:4200`.
 
 
