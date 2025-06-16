@@ -41,13 +41,33 @@
       </div>
 
       <div class="form-group">
-        <label for="publishedDate">Published Date</label>
-        <input id="publishedDate" type="date" formControlName="publishedDate">
-        <div *ngIf="addBookForm.get('publishedDate')?.invalid && (addBookForm.get('publishedDate')?.dirty || addBookForm.get('publishedDate')?.touched)" class="error-message">
-          <span *ngIf="addBookForm.get('publishedDate')?.errors?.['required']">Published Date is required.</span>
+        <label for="uploadDate">When did you read?</label>
+        <input id="uploadDate" type="date" formControlName="uploadDate">
+        <div *ngIf="addBookForm.get('uploadDate')?.invalid && (addBookForm.get('uploadDate')?.dirty || addBookForm.get('uploadDate')?.touched)" class="error-message">
+          <span *ngIf="addBookForm.get('uploadDate')?.errors?.['required']">Published Date is required.</span>
         </div>
       </div>
 
+      <div class="form-group">
+        <label>Rate the book</label>
+        <div class="star-rating">
+          <ng-container *ngFor="let star of stars; let i = index">
+            <span
+              class="star"
+              [class.filled]="i < (hoveredStar || addBookForm.get('rank')?.value)"
+              (click)="setRank(i + 1)"
+              (mouseover)="hoverStars(i + 1)"
+              (mouseleave)="hoverStars(0)"
+              >&#9733;</span>
+          </ng-container>
+        </div>
+        <div *ngIf="addBookForm.get('rank')?.invalid && (addBookForm.get('rank')?.dirty || addBookForm.get('rank')?.touched)" class="error-message">
+          <span *ngIf="addBookForm.get('rank')?.errors?.['required']">Rating is required.</span>
+          <span *ngIf="addBookForm.get('rank')?.errors?.['min']">Rating must be at least 1.</span>
+          <span *ngIf="addBookForm.get('rank')?.errors?.['max']">Rating cannot exceed 10.</span>
+        </div>
+      </div>
+        
       <div *ngIf="addBookError" class="error-message backend-error">
         {{ addBookError }}
       </div>

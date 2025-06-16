@@ -6,7 +6,8 @@
   </header>
 
   <nav class="navigation-buttons">
-    <button (click)="navigateToBooks()" class="action-button explore-button">Explore Books</button>
+    <!-- Show Explore Books only if logged in -->
+    <button *ngIf="isLoggedIn" (click)="navigateToBooks()" class="action-button explore-button">Explore Books</button>
     
     <!-- Show Login/Register if not logged in -->
     <ng-container *ngIf="!isLoggedIn">

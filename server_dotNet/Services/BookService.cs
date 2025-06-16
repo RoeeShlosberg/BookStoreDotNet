@@ -22,7 +22,8 @@ namespace BookStore.Services
                     Id = b.Id,
                     Title = b.Title,
                     Author = b.Author,
-                    PublishedDate = b.PublishedDate
+                    UploadDate = b.UploadDate,
+                    Rank = b.Rank
                 })
                 .ToListAsync();
         }
@@ -37,7 +38,8 @@ namespace BookStore.Services
                 Id = book.Id,
                 Title = book.Title,
                 Author = book.Author,
-                PublishedDate = book.PublishedDate
+                UploadDate = book.UploadDate,
+                Rank = book.Rank
             };
         }
 
@@ -47,7 +49,8 @@ namespace BookStore.Services
             {
                 Title = dto.Title,
                 Author = dto.Author,
-                PublishedDate = dto.PublishedDate ?? DateTime.Now
+                UploadDate = dto.UploadDate ?? DateTime.UtcNow,
+                Rank = dto.Rank
             };
 
             _context.Books.Add(book);
@@ -58,7 +61,8 @@ namespace BookStore.Services
                 Id = book.Id,
                 Title = book.Title,
                 Author = book.Author,
-                PublishedDate = book.PublishedDate
+                UploadDate = book.UploadDate,
+                Rank = book.Rank
             };
         }
 
@@ -69,7 +73,8 @@ namespace BookStore.Services
 
             book.Title = dto.Title;
             book.Author = dto.Author;
-            book.PublishedDate = dto.PublishedDate ?? book.PublishedDate;
+            book.UploadDate = dto.UploadDate ?? book.UploadDate;
+            book.Rank = dto.Rank;
 
             _context.Books.Update(book);
             return await _context.SaveChangesAsync() > 0;
@@ -79,6 +84,10 @@ namespace BookStore.Services
         {
             var book = await _context.Books.FindAsync(id);
             if (book == null) return false;
+
+            // Remove all BookUser associations for this book
+            var bookUsers = _context.BookUsers.Where(bu => bu.BookId == id);
+            _context.BookUsers.RemoveRange(bookUsers);
 
             _context.Books.Remove(book);
             return await _context.SaveChangesAsync() > 0;
@@ -93,7 +102,68 @@ namespace BookStore.Services
                     Id = b.Id,
                     Title = b.Title,
                     Author = b.Author,
-                    PublishedDate = b.PublishedDate
+                    UploadDate = b.UploadDate,
+                    Rank = b.Rank
+                })
+                .ToListAsync();
+        }
+
+        public async Task<BookDto> CreateBookForUserAsync(CreateBookDto dto, int userId)
+        {
+            var book = new Book
+            {
+                Title = dto.Title,
+                Author = dto.Author,
+                UploadDate = dto.UploadDate ?? DateTime.UtcNow,
+                Rank = dto.Rank
+            };
+            _context.Books.Add(book);
+            await _context.SaveChangesAsync();
+
+            var bookUser = new BookUser
+            {
+                UserId = userId,
+                BookId = book.Id
+            };
+            _context.BookUsers.Add(bookUser);
+            await _context.SaveChangesAsync();
+
+            return new BookDto
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                UploadDate = book.UploadDate,
+                Rank = book.Rank
+            };
+        }
+
+        public async Task<List<BookDto>> GetAllBooksForUserAsync(int userId)
+        {
+            return await _context.BookUsers
+                .Where(bu => bu.UserId == userId)
+                .Select(bu => new BookDto
+                {
+                    Id = bu.Book.Id,
+                    Title = bu.Book.Title,
+                    Author = bu.Book.Author,
+                    UploadDate = bu.Book.UploadDate,
+                    Rank = bu.Book.Rank
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<BookDto>> SearchBooksForUserAsync(string searchTerm, int userId)
+        {
+            return await _context.BookUsers
+                .Where(bu => bu.UserId == userId && (bu.Book.Title.Contains(searchTerm) || bu.Book.Author.Contains(searchTerm)))
+                .Select(bu => new BookDto
+                {
+                    Id = bu.Book.Id,
+                    Title = bu.Book.Title,
+                    Author = bu.Book.Author,
+                    UploadDate = bu.Book.UploadDate,
+                    Rank = bu.Book.Rank
                 })
                 .ToListAsync();
         }

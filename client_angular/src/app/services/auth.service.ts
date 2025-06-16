@@ -21,7 +21,8 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {
   }
 
-  private hasToken(): boolean {
+  // Make hasToken public for AuthGuard
+  public hasToken(): boolean {
     return !!localStorage.getItem(this.TOKEN_KEY);
   }
 

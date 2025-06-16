@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using BookStore.Dtos;
 using BookStore.Data;
 using BookStore.Services;
+using System.Security.Claims;
 
 namespace BookStore.Controllers
 {
@@ -28,11 +29,15 @@ namespace BookStore.Controllers
         /// </summary>
         /// <returns>A list of all books in the library</returns>
         /// <response code="200">Returns the list of books</response>
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetBooks()
         {
-            var books = await _bookService.GetAllBooksAsync();
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                return Unauthorized();
+            var books = await _bookService.GetAllBooksForUserAsync(userId);
             return Ok(books);
         }
 
@@ -43,6 +48,7 @@ namespace BookStore.Controllers
         /// <returns>The requested book</returns>
         /// <response code="200">Returns the requested book</response>
         /// <response code="404">If the book is not found</response>
+        [Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -71,7 +77,13 @@ namespace BookStore.Controllers
         {
             if (book == null || !ModelState.IsValid)
                 return BadRequest(ModelState);
-            var createdBook = await _bookService.CreateBookAsync(book);
+
+            // Extract user ID from token
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                return Unauthorized();
+
+            var createdBook = await _bookService.CreateBookForUserAsync(book, userId);
             return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook);
         }
 
@@ -132,15 +144,14 @@ namespace BookStore.Controllers
         /// <returns>A list of books matching the search criteria</returns>
         /// <response code="200">Returns the matching books</response>
         /// <response code="400">If the search term is empty</response>
+        [Authorize]
         [HttpGet("search")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SearchBooks([FromQuery] string searchTerm)
         {
-            if (string.IsNullOrWhiteSpace(searchTerm))
-                return BadRequest("Search term cannot be empty.");
-
-            var books = await _bookService.SearchBooksAsync(searchTerm);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                return Unauthorized();
+            var books = await _bookService.SearchBooksForUserAsync(searchTerm, userId);
             return Ok(books);
         }
     }

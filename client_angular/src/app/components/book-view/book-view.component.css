@@ -39,10 +39,18 @@
   font-style: italic;
 }
 
-.book-card .published-date {
+.book-card .uploade-date {
   font-size: 0.9em;
   color: #777;
   margin-bottom: 0;
+}
+
+.book-card .rank {
+  font-size: 1.2em;
+  /* Using a bold dark gold color for rank */
+  color: #997e25; /* Gold color */
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 /* Define some CSS variables for colors if not already globally defined */

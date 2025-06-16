@@ -26,6 +26,8 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
   isSearching: boolean = false;
   searchTerm: string = '';
   private authSubscription!: Subscription;
+  stars: number[] = Array(10).fill(0);
+  hoveredStar: number = 0;
 
   constructor(
     private bookService: BookService, 
@@ -35,7 +37,8 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
     this.addBookForm = new FormGroup({
       title: new FormControl('', [Validators.required, Validators.minLength(3)]),
       author: new FormControl('', [Validators.required, Validators.minLength(3)]),
-      publishedDate: new FormControl('', Validators.required)
+      uploadDate: new FormControl('', Validators.required),
+      rank: new FormControl('', [Validators.required, Validators.min(1), Validators.max(10)]) // 1-10
     });
   } // Initialize form group for adding a new book
 
@@ -101,21 +104,19 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
   onAddBookSubmit(): void {
     if (this.addBookForm.invalid) {
       this.addBookError = 'Please correct the errors in the form.';
-      // Mark all fields as touched to display validation messages
       Object.values(this.addBookForm.controls).forEach(control => {
         control.markAsTouched();
       });
       return;
     }
     this.addBookError = null;
-    const newBook: CreateBookDto = {
-      title: this.addBookForm.value.title,
-      author: this.addBookForm.value.author,
-      // Ensure publishedDate is in the correct format if necessary, e.g., ISO string
-      publishedDate: new Date(this.addBookForm.value.publishedDate) // Sending as Date object
+    const newBook: any = {
+      Title: this.addBookForm.value.title,
+      Author: this.addBookForm.value.author,
+      UploadedDate: this.addBookForm.value.uploadDate ? new Date(this.addBookForm.value.uploadDate) : null,
+      Rank: this.addBookForm.value.rank
     };
-
-    this.isLoading = true; // Show loading indicator for the page or a specific one for the form
+    this.isLoading = true;
     this.bookService.addBook(newBook).subscribe({
       next: (addedBook) => {
         console.log('Book added successfully', addedBook);
@@ -165,5 +166,14 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
     this.searchTerm = '';
     this.isSearching = false;
     this.fetchBooks();
+  }
+
+  setRank(rank: number): void {
+    this.addBookForm.get('rank')?.setValue(rank);
+    this.addBookForm.get('rank')?.markAsTouched();
+  }
+
+  hoverStars(rank: number): void {
+    this.hoveredStar = rank;
   }
 }

@@ -26,6 +26,8 @@ export class BookPageComponent implements OnInit, OnDestroy {
   showEditForm: boolean = false;
   editBookForm!: FormGroup; // Initialize in constructor or ngOnInit
   private authSubscription!: Subscription;
+  stars: number[] = Array(10).fill(0);
+  hoveredEditStar: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -56,7 +58,8 @@ export class BookPageComponent implements OnInit, OnDestroy {
     this.editBookForm = new FormGroup({
       title: new FormControl('', [Validators.required, Validators.minLength(3)]),
       author: new FormControl('', [Validators.required, Validators.minLength(3)]),
-      publishedDate: new FormControl('', Validators.required)
+      uploadDate: new FormControl('', Validators.required),
+      rank: new FormControl('', [Validators.required, Validators.min(1), Validators.max(10)]) // 1-10
     });
   }
 
@@ -92,7 +95,8 @@ export class BookPageComponent implements OnInit, OnDestroy {
       this.editBookForm.patchValue({
         title: this.book.title,
         author: this.book.author,
-        publishedDate: formatDate(this.book.publishedDate, 'yyyy-MM-dd', 'en-US') // Format date for input
+        uploadDate: formatDate(this.book.uploadDate, 'yyyy-MM-dd', 'en-US'), // Format date for input
+        rank: this.book.rank // Include rank if needed
       });
     }
   }
@@ -118,6 +122,15 @@ export class BookPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  setEditRank(rank: number): void {
+    this.editBookForm.get('rank')?.setValue(rank);
+    this.editBookForm.get('rank')?.markAsTouched();
+  }
+
+  hoverEditStars(rank: number): void {
+    this.hoveredEditStar = rank;
+  }
+
   onEditBookSubmit(): void {
     if (!this.book) {
       this.editError = 'Cannot update: Book data is missing.';
@@ -136,7 +149,8 @@ export class BookPageComponent implements OnInit, OnDestroy {
       id: this.book.id, // Keep the original ID
       title: this.editBookForm.value.title,
       author: this.editBookForm.value.author,
-      publishedDate: new Date(this.editBookForm.value.publishedDate)
+      uploadDate: this.editBookForm.value.uploadDate ? new Date(this.editBookForm.value.uploadDate) : new Date(), // Convert to Date object
+      rank: this.editBookForm.value.rank // Include rank if needed
     };
 
     const bookIdToRefresh = this.book.id; // Store the ID for re-fetching
