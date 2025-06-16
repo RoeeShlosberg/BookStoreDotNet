@@ -65,6 +65,7 @@ builder.Services.AddSwaggerGen(c =>
 // Add services to the container.
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUserService, UserService>(); // Add this line
+builder.Services.AddScoped<SharedBookListService>(); // Register SharedBookListService
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(options =>

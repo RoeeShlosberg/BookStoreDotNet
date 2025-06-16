@@ -14,6 +14,7 @@ namespace BookStore.Data
         public DbSet<Book> Books { get; set; }  // Represents the Books table in the database
         public DbSet<User> Users { get; set; } // Represents the Users table in the database
         public DbSet<BookUser> BookUsers { get; set; } // Join table for books and users
+        public DbSet<SharedBookList> SharedBookLists { get; set; } // Table for shared book lists
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -45,6 +46,14 @@ namespace BookStore.Data
                 .WithMany()
                 .HasForeignKey(bu => bu.BookId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // SharedBookList: store BookIds as a semicolon-separated string
+            modelBuilder.Entity<SharedBookList>()
+                .Property(s => s.BookIds)
+                .HasConversion(
+                    v => string.Join(";", v),
+                    v => v.Split(';', System.StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList()
+                );
         }
     }
 }
