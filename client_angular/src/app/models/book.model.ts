@@ -4,4 +4,5 @@ export interface Book {
   author: string;
   uploadDate: Date;
   rank: number;
+  categories: string[];
 }

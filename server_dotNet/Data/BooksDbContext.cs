@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using BookStore.Models;
 
 namespace BookStore.Data
@@ -21,6 +22,13 @@ namespace BookStore.Data
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Username)
                 .IsUnique();
+
+            modelBuilder.Entity<Book>()
+                .Property(b => b.Categories)
+                .HasConversion(new ValueConverter<List<string>, string>(
+                    v => string.Join(";", v ?? new List<string>()),
+                    v => v.Split(';', System.StringSplitOptions.RemoveEmptyEntries).ToList()
+                ));
 
             modelBuilder.Entity<BookUser>()
                 .HasIndex(bu => new { bu.UserId, bu.BookId })

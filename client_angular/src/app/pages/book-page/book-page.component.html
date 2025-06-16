@@ -48,9 +48,7 @@
         <div *ngIf="editBookForm.get('uploadDate')?.invalid && (editBookForm.get('uploadDate')?.dirty || editBookForm.get('uploadDate')?.touched)" class="error-message form-error">
           <span *ngIf="editBookForm.get('uploadDate')?.errors?.['required']">Published Date is required.</span>
         </div>
-      </div>
-
-      <div class="form-group">
+      </div>      <div class="form-group">
         <label for="edit-rank">Rate the book</label>
         <div class="star-rating">
           <ng-container *ngFor="let star of stars; let i = index">
@@ -68,6 +66,17 @@
           <span *ngIf="editBookForm.get('rank')?.errors?.['min']">Rating must be at least 1.</span>
           <span *ngIf="editBookForm.get('rank')?.errors?.['max']">Rating cannot exceed 10.</span>
         </div>
+      </div>
+
+      <div class="form-group">
+        <label>Categories <span class="required">*</span></label>
+        <app-category-dropdown 
+          [allowedCategories]="allowedCategories"
+          [categoryControls]="editCategoryControls"
+          [isInvalid]="editBookForm.get('categories')?.invalid || false"
+          [isTouched]="editBookForm.get('categories')?.touched || false"
+          (categoriesChanged)="editBookForm.get('categories')?.markAsTouched()"
+        ></app-category-dropdown>
       </div>
 
       <div *ngIf="editError" class="error-message backend-error">

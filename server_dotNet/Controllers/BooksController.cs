@@ -83,8 +83,15 @@ namespace BookStore.Controllers
             if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
                 return Unauthorized();
 
-            var createdBook = await _bookService.CreateBookForUserAsync(book, userId);
-            return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook);
+            try
+            {
+                var createdBook = await _bookService.CreateBookForUserAsync(book, userId);
+                return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         /// <summary>
@@ -108,11 +115,18 @@ namespace BookStore.Controllers
             if (book == null || !ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var updated = await _bookService.UpdateBookAsync(id, book);
-            if (!updated)
-                return NotFound();
+            try
+            {
+                var updated = await _bookService.UpdateBookAsync(id, book);
+                if (!updated)
+                    return NotFound();
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         /// <summary>

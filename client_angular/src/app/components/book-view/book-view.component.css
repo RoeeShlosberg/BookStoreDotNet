@@ -59,3 +59,17 @@
   --vivid-pink: #FF007F;      /* Example: Vivid Pink */
   --pill-accent: #4A90E2;     /* Example: Bright Blue for accent */
 }
+
+.categories-list {
+  margin-bottom: 10px;
+}
+
+.categories-text {
+  color: #2a75c4;
+  font-size: 0.95rem;
+  font-style: italic;
+  background-color: #f0f7ff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-block;
+}

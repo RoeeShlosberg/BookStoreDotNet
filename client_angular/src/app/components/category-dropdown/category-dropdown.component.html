@@ -1,0 +1,42 @@
+<div class="category-dropdown-container">  <div class="category-dropdown-header" (click)="toggleDropdown($event)">
+    <div class="selected-categories">
+      <ng-container *ngIf="hasSelectedCategories; else selectPlaceholder">
+        <span class="category-list">
+          <ng-container *ngFor="let cat of getSelectedCategories().slice(0, 3); let i = index; let last = last">
+            {{ cat }}<ng-container *ngIf="!last">, </ng-container>
+          </ng-container>
+          <ng-container *ngIf="getSelectedCategories().length > 3">
+            <span class="more-count"> +{{ getSelectedCategories().length - 3 }}</span>
+          </ng-container>
+        </span>
+      </ng-container>
+      <ng-template #selectPlaceholder>
+        <span class="placeholder-text">Select categories</span>
+      </ng-template>
+    </div>
+    <span class="dropdown-icon" [class.open]="isOpen">&#9662;</span>
+  </div>
+    <div class="dropdown-menu" [class.show]="isOpen">
+    <div class="category-options">
+      <div 
+        *ngFor="let cat of allowedCategories; let i = index" 
+        class="category-option" 
+        [class.selected]="categoryControls[i]?.value"
+        [class.disabled]="!categoryControls[i]?.value && hasMaxCategories"
+        (click)="selectCategory($event, i)"
+      >
+        <span class="checkbox">
+          <span class="checkmark" *ngIf="categoryControls[i]?.value">✓</span>
+        </span>
+        <span class="category-label">{{ cat }}</span>
+      </div>
+    </div>
+    <div class="category-limit-info" *ngIf="hasMaxCategories">
+      <span>Maximum of 3 categories reached</span>
+    </div>
+  </div>
+  
+  <div *ngIf="isInvalid && isTouched" class="error-message">
+    <span>Please select at least one category.</span>
+  </div>
+</div>

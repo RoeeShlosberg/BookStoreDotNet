@@ -5,14 +5,16 @@ import { AuthService } from '../../services/auth.service';
 import { Book } from '../../models/book.model';
 import { CommonModule, formatDate } from '@angular/common'; // Import formatDate
 import { BookViewComponent } from '../../components/book-view/book-view.component';
+import { CategoryDropdownComponent } from '../../components/category-dropdown/category-dropdown.component';
 import { Subscription } from 'rxjs';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms'; // Import ReactiveFormsModule and form-related classes
+import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormArray } from '@angular/forms'; // Import ReactiveFormsModule and form-related classes
+import { CategoryService } from '../../services/category.service';
 
 
 @Component({
   selector: 'app-book-page',
   standalone: true,
-  imports: [CommonModule, BookViewComponent, ReactiveFormsModule], // Add ReactiveFormsModule
+  imports: [CommonModule, BookViewComponent, ReactiveFormsModule, CategoryDropdownComponent], // Add ReactiveFormsModule
   templateUrl: './book-page.component.html',
   styleUrl: './book-page.component.css'
 })
@@ -25,14 +27,16 @@ export class BookPageComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean = false;
   showEditForm: boolean = false;
   editBookForm!: FormGroup; // Initialize in constructor or ngOnInit
-  private authSubscription!: Subscription;
-  stars: number[] = Array(10).fill(0);
+  private authSubscription!: Subscription;  stars: number[] = Array(10).fill(0);
   hoveredEditStar: number = 0;
+  allowedCategories: string[] = [];
+  categoriesLoading: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private bookService: BookService,
     private authService: AuthService,
+    private categoryService: CategoryService,
     private router: Router
   ) {}
 
@@ -51,7 +55,28 @@ export class BookPageComponent implements OnInit, OnDestroy {
         this.showEditForm = false; // Hide edit form if user logs out
       }
     });
+    this.fetchCategories();
     this.initializeForm(); // Initialize form structure
+  }
+
+  fetchCategories(): void {
+    this.categoriesLoading = true;
+    this.categoryService.getCategories().subscribe({
+      next: (cats) => {
+        this.allowedCategories = cats;
+        // Reset FormArray
+        if (this.editBookForm) {
+          const formArray = this.editBookForm.get('categories') as FormArray;
+          formArray?.clear();
+          cats.forEach(() => formArray?.push(new FormControl(false)));
+        }
+        this.categoriesLoading = false;
+      },
+      error: () => {
+        this.allowedCategories = [];
+        this.categoriesLoading = false;
+      }
+    });
   }
 
   initializeForm(): void {    
@@ -59,7 +84,8 @@ export class BookPageComponent implements OnInit, OnDestroy {
       title: new FormControl('', [Validators.required, Validators.minLength(3)]),
       author: new FormControl('', [Validators.required, Validators.minLength(3)]),
       uploadDate: new FormControl('', Validators.required),
-      rank: new FormControl('', [Validators.required, Validators.min(1), Validators.max(10)]) // 1-10
+      rank: new FormControl('', [Validators.required, Validators.min(1), Validators.max(10)]),
+      categories: new FormArray([], Validators.required)
     });
   }
 
@@ -89,7 +115,6 @@ export class BookPageComponent implements OnInit, OnDestroy {
       }
     });
   }
-
   populateFormForEdit(): void {
     if (this.book) {
       this.editBookForm.patchValue({
@@ -97,6 +122,11 @@ export class BookPageComponent implements OnInit, OnDestroy {
         author: this.book.author,
         uploadDate: formatDate(this.book.uploadDate, 'yyyy-MM-dd', 'en-US'), // Format date for input
         rank: this.book.rank // Include rank if needed
+      });
+      // Set categories
+      const formArray = this.editBookForm.get('categories') as FormArray;
+      formArray.clear();      this.allowedCategories.forEach(cat => {
+        formArray.push(new FormControl(this.book?.categories?.includes(cat)));
       });
     }
   }
@@ -130,14 +160,21 @@ export class BookPageComponent implements OnInit, OnDestroy {
   hoverEditStars(rank: number): void {
     this.hoveredEditStar = rank;
   }
-
   onEditBookSubmit(): void {
     if (!this.book) {
       this.editError = 'Cannot update: Book data is missing.';
       return;
     }
-    if (this.editBookForm.invalid) {
-      this.editError = 'Please correct the errors in the form.';
+    
+    const selectedCats = this.selectedEditCategories();
+    if (this.editBookForm.invalid || selectedCats.length === 0 || selectedCats.length > 3) {
+      if (selectedCats.length === 0) {
+        this.editError = 'Please select at least one category.';
+      } else if (selectedCats.length > 3) {
+        this.editError = 'Please select at most 3 categories.';
+      } else {
+        this.editError = 'Please correct the errors in the form.';
+      }
       Object.values(this.editBookForm.controls).forEach(control => {
         control.markAsTouched();
       });
@@ -150,7 +187,8 @@ export class BookPageComponent implements OnInit, OnDestroy {
       title: this.editBookForm.value.title,
       author: this.editBookForm.value.author,
       uploadDate: this.editBookForm.value.uploadDate ? new Date(this.editBookForm.value.uploadDate) : new Date(), // Convert to Date object
-      rank: this.editBookForm.value.rank // Include rank if needed
+      rank: this.editBookForm.value.rank, // Include rank if needed
+      categories: selectedCats
     };
 
     const bookIdToRefresh = this.book.id; // Store the ID for re-fetching
@@ -212,5 +250,12 @@ export class BookPageComponent implements OnInit, OnDestroy {
         });
       }
     }
+  }  selectedEditCategories(): string[] {
+    return this.allowedCategories.filter((cat, i) => (this.editBookForm.get('categories') as FormArray).at(i).value);
+  }
+
+  get editCategoryControls(): FormControl[] {
+    const arr = this.editBookForm.get('categories');
+    return (arr && arr instanceof FormArray) ? (arr.controls as FormControl[]) : [];
   }
 }

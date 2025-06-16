@@ -1,6 +1,8 @@
 // Create model for Book
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+
 namespace BookStore.Models
 {
     public class Book
@@ -24,6 +26,9 @@ namespace BookStore.Models
         [Range(1, 10)]
         [Required]
         public int Rank { get; set; }
+
+        [Required]
+        public List<string> Categories { get; set; } = new List<string>();
     }
 
     public class BookUser

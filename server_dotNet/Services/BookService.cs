@@ -2,6 +2,8 @@ using BookStore.Data;
 using Microsoft.EntityFrameworkCore;
 using BookStore.Dtos;
 using BookStore.Models;
+using BookStore.Controllers; // For CategoriesController.AllowedCategories
+using BookStore.Infrastructure;
 
 namespace BookStore.Services
 {
@@ -23,7 +25,8 @@ namespace BookStore.Services
                     Title = b.Title,
                     Author = b.Author,
                     UploadDate = b.UploadDate,
-                    Rank = b.Rank
+                    Rank = b.Rank,
+                    Categories = b.Categories
                 })
                 .ToListAsync();
         }
@@ -39,18 +42,26 @@ namespace BookStore.Services
                 Title = book.Title,
                 Author = book.Author,
                 UploadDate = book.UploadDate,
-                Rank = book.Rank
+                Rank = book.Rank,
+                Categories = book.Categories
             };
         }
 
         public async Task<BookDto> CreateBookAsync(CreateBookDto dto)
         {
+            // Validate categories
+            var allowedCategories = CategoryStore.AllowedCategories;
+            if (dto.Categories == null || dto.Categories.Any(c => !allowedCategories.Contains(c)))
+            {
+                throw new ArgumentException("One or more categories are invalid.");
+            }
             var book = new Book
             {
                 Title = dto.Title,
                 Author = dto.Author,
                 UploadDate = dto.UploadDate ?? DateTime.UtcNow,
-                Rank = dto.Rank
+                Rank = dto.Rank,
+                Categories = dto.Categories ?? new List<string>()
             };
 
             _context.Books.Add(book);
@@ -62,12 +73,19 @@ namespace BookStore.Services
                 Title = book.Title,
                 Author = book.Author,
                 UploadDate = book.UploadDate,
-                Rank = book.Rank
+                Rank = book.Rank,
+                Categories = book.Categories
             };
         }
 
         public async Task<bool> UpdateBookAsync(int id, UpdateBookDto dto)
         {
+            // Validate categories
+            var allowedCategories = CategoryStore.AllowedCategories;
+            if (dto.Categories == null || dto.Categories.Any(c => !allowedCategories.Contains(c)))
+            {
+                throw new ArgumentException("One or more categories are invalid.");
+            }
             var book = await _context.Books.FindAsync(id);
             if (book == null) return false;
 
@@ -75,6 +93,7 @@ namespace BookStore.Services
             book.Author = dto.Author;
             book.UploadDate = dto.UploadDate ?? book.UploadDate;
             book.Rank = dto.Rank;
+            book.Categories = dto.Categories ?? new List<string>();
 
             _context.Books.Update(book);
             return await _context.SaveChangesAsync() > 0;
@@ -103,19 +122,27 @@ namespace BookStore.Services
                     Title = b.Title,
                     Author = b.Author,
                     UploadDate = b.UploadDate,
-                    Rank = b.Rank
+                    Rank = b.Rank,
+                    Categories = b.Categories
                 })
                 .ToListAsync();
         }
 
         public async Task<BookDto> CreateBookForUserAsync(CreateBookDto dto, int userId)
         {
+            // Validate categories
+            var allowedCategories = CategoryStore.AllowedCategories;
+            if (dto.Categories == null || dto.Categories.Any(c => !allowedCategories.Contains(c)))
+            {
+                throw new ArgumentException("One or more categories are invalid.");
+            }
             var book = new Book
             {
                 Title = dto.Title,
                 Author = dto.Author,
                 UploadDate = dto.UploadDate ?? DateTime.UtcNow,
-                Rank = dto.Rank
+                Rank = dto.Rank,
+                Categories = dto.Categories ?? new List<string>()
             };
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
@@ -134,7 +161,8 @@ namespace BookStore.Services
                 Title = book.Title,
                 Author = book.Author,
                 UploadDate = book.UploadDate,
-                Rank = book.Rank
+                Rank = book.Rank,
+                Categories = book.Categories
             };
         }
 
@@ -148,7 +176,8 @@ namespace BookStore.Services
                     Title = bu.Book.Title,
                     Author = bu.Book.Author,
                     UploadDate = bu.Book.UploadDate,
-                    Rank = bu.Book.Rank
+                    Rank = bu.Book.Rank,
+                    Categories = bu.Book.Categories
                 })
                 .ToListAsync();
         }
@@ -163,7 +192,8 @@ namespace BookStore.Services
                     Title = bu.Book.Title,
                     Author = bu.Book.Author,
                     UploadDate = bu.Book.UploadDate,
-                    Rank = bu.Book.Rank
+                    Rank = bu.Book.Rank,
+                    Categories = bu.Book.Categories
                 })
                 .ToListAsync();
         }

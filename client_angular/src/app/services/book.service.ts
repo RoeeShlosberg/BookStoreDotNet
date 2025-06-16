@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'; // Import HttpClient
-import { Observable } from 'rxjs'; // Import Observable
-import { Book } from '../models/book.model'; // Import the Book model
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Book } from '../models/book.model';
 
 // Define a type for the book data when creating a new book, omitting the id
 export type CreateBookDto = Omit<Book, 'id'>;
@@ -26,7 +26,7 @@ export class BookService {
     return this.http.post<Book>(this.apiUrl, bookData);
   }
 
-  updateBook(id: number, bookData: Book): Observable<Book> {
+  updateBook(id: number, bookData: CreateBookDto): Observable<Book> {
     return this.http.put<Book>(`${this.apiUrl}/${id}`, bookData);
   }
 
