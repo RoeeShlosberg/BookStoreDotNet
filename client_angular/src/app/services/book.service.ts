@@ -10,7 +10,8 @@ export type CreateBookDto = Omit<Book, 'id'>;
   providedIn: 'root'
 })
 export class BookService {
-  private apiUrl = 'http://localhost:5000/api/books'; // Define the API URL
+  // Support both HTTP and HTTPS for development
+  private apiUrl = 'http://localhost:5000/api/books'; 
 
   constructor(private http: HttpClient) { } // Inject HttpClient
 
@@ -36,5 +37,11 @@ export class BookService {
 
   searchBooks(query: string): Observable<Book[]> {
     return this.http.get<Book[]>(`${this.apiUrl}/search`, { params: { searchTerm: query } });
+  }
+  getSharedList(listId: string): Observable<Book[]> {
+    return this.http.get<Book[]>(`http://localhost:5000/api/SharedLists/${listId}`);
+  }
+  createSharedList(bookIds: number[]): Observable<{id: string}> {
+    return this.http.post<{id: string}>(`http://localhost:5000/api/SharedLists`, bookIds);
   }
 }

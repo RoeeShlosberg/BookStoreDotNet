@@ -1,8 +1,6 @@
 # 📚 BookStore Application
 
-🚀 A full-stack bookstore app built to demonstrate modern web development with a robust .NET 8 backend and a sleek Angular 17 frontend. Includes authentication, user-specific libraries, book categories, ratings, comprehensive testing, and a full CI pipeline with GitHub Actions.
-
-This project has evolved from a simple CRUD application to a more feature-rich platform, showcasing advanced concepts in both backend and frontend development.
+🚀 A full-stack bookstore app built to demonstrate modern web development with a robust .NET 8 backend and a sleek Angular 17 frontend. Includes authentication, user-specific libraries, book categories, ratings, public shareable book lists, social media integration, comprehensive testing, and a full CI pipeline with GitHub Actions.
 
 ---
 
@@ -11,15 +9,15 @@ This project has evolved from a simple CRUD application to a more feature-rich p
 ```
 📁 BookStore/
 ├── 🖥️ server_dotNet/          # .NET 8 Web API Backend
-│   ├── Controllers/          # API endpoints (Books, Users, Categories)
+│   ├── Controllers/          # API endpoints (Books, Users, Categories, SharedLists)
 │   ├── Services/             # Business logic
 │   ├── Data/                 # EF Core DbContext and migrations
-│   ├── Models/               # C# entity models (Book, User, Category, Rating)
+│   ├── Models/               # C# entity models (Book, User, Category, Rating, SharedBookList)
 │   └── BooksApi.Tests/       # xUnit tests for services and controllers
 ├── 🌐 client_angular/         # Angular 17 Frontend
 │   ├── src/app/
 │   │   ├── components/       # Reusable UI components (e.g., book card, navbar)
-│   │   ├── pages/            # Main views (e.g., home, login, book details)
+│   │   ├── pages/            # Main views (e.g., home, login, book details, shared-list)
 │   │   ├── services/         # Services for API communication and auth
 │   │   └── guards/           # Route guards for authentication
 └── ⚙️ .github/workflows/      # GitHub Actions CI workflow
@@ -61,6 +59,11 @@ The backend is a powerful and secure REST API built with ASP.NET Core 8, providi
 
 -   `GET /`: Returns a list of all available book categories.
 
+**Shared Lists (`/api/SharedLists`)**
+
+-   `POST /`: Creates a shareable list of books and returns a unique ID.
+-   `GET /{id}`: Retrieves a collection of books from a shared list using its unique ID.
+
 ### ✅ Testing & CI
 
 A robust suite of unit tests built with xUnit ensures the reliability of the business logic. The tests cover:
@@ -93,6 +96,8 @@ The frontend is a modern, responsive single-page application (SPA) built with An
 -   **JWT Client-Side Handling**: Securely stores and sends JWTs for authenticated API requests using an HTTP Interceptor.
 -   **Route Guards**: Protects routes like the user's personal library, accessible only to logged-in users.
 -   **Responsive Design**: Adapts beautifully to various screen sizes, from mobile to desktop.
+-   **Public Sharing Feature**: Generate unique URLs for sharing curated book collections with anyone.
+-   **Social Media Integration**: Built-in sharing capabilities for WhatsApp, Facebook, Twitter, and email.
 
 ### ✨ User Experience Flow
 
@@ -100,6 +105,8 @@ The frontend is a modern, responsive single-page application (SPA) built with An
 2.  **Browse Books**: The main page displays a gallery of all available books.
 3.  **View Details**: Clicking a book shows its full details, including its assigned **category** and user **ratings**.
 4.  **Personal Library**: Authenticated users can add, edit, or remove books from their collection.
+5.  **Share Book Lists**: Users can create public, shareable links to their filtered book collections.
+6.  **Social Sharing**: Seamlessly share book lists via WhatsApp, Facebook, Twitter, or email with integrated social buttons.
 
 ### 🔧 Setup & Running
 

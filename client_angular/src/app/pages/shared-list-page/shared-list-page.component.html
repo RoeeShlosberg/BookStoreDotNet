@@ -1,0 +1,45 @@
+<div class="full-width-container">
+  <div class="shared-list-page">
+  <div class="header-container">
+    <h2>✨ Shared Book List</h2>
+    <button mat-raised-button class="home-button" (click)="navigateToHome()">
+      <span class="button-content">
+        <span>Go Home Page</span>
+      </span>
+    </button>
+  </div>
+  <div class="filters-container">
+    <mat-form-field appearance="outline" class="search-bar">
+      <mat-label>Search books</mat-label>
+      <input matInput (input)="onSearch($event)" [value]="searchTerm" placeholder="Search by title or author...">
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="category-filter">
+      <mat-label>Filter by category</mat-label>
+      <mat-select multiple [value]="selectedCategories" (selectionChange)="onCategoryChange($event.value)">
+        <mat-option *ngFor="let category of categories" [value]="category">{{ category }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="rank-filter">
+    <label>Minimum Rating: <span class="rank-value">{{ selectedMinRank }}</span>/10</label>
+    <mat-slider min="1" max="10" step="1" discrete class="colored-slider">
+      <input matSliderThumb [(ngModel)]="selectedMinRank" (valueChange)="onRankChange($event)">
+    </mat-slider>
+  </div>
+  <div *ngIf="isLoading" class="loading">
+    <div class="loading-text">Loading books...</div>
+  </div>
+  <div *ngIf="hasError" class="error-message">
+    <div class="error-icon">⚠️</div>
+    {{ errorMessage }}
+  </div>
+  <div *ngIf="!isLoading && !hasError && filteredBooks.length === 0" class="no-books">
+    <div class="no-books-icon">📕</div>
+    No books found matching your criteria.
+  </div>
+  <div class="book-list">
+    <app-book-view *ngFor="let book of filteredBooks" [book]="book"></app-book-view>
+  </div>
+</div>
+</div>

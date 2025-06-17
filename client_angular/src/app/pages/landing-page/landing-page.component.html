@@ -1,6 +1,9 @@
 <div class="landing-container">
   <header class="landing-header">
-    <h1>Welcome to the Great Library of Books!</h1>
+    <div class="logo-container">
+      <img src="assets/book-icon.svg" alt="Book Store Icon" class="book-icon">
+    </div>
+    <h1>Book Store Online</h1>
     <p class="subtitle" *ngIf="!isLoggedIn">Discover your next favorite read.</p>
     <p class="subtitle user-greeting" *ngIf="isLoggedIn">Hello, <span class="username">{{ userName }}</span>! Discover your next favorite read.</p>
   </header>

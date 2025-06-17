@@ -21,12 +21,12 @@
       <div 
         *ngFor="let cat of allowedCategories; let i = index" 
         class="category-option" 
-        [class.selected]="categoryControls[i]?.value"
-        [class.disabled]="!categoryControls[i]?.value && hasMaxCategories"
+        [class.selected]="categoryControls[i].value"
+        [class.disabled]="!categoryControls[i].value && hasMaxCategories"
         (click)="selectCategory($event, i)"
       >
         <span class="checkbox">
-          <span class="checkmark" *ngIf="categoryControls[i]?.value">✓</span>
+          <span class="checkmark" *ngIf="categoryControls[i].value">✓</span>
         </span>
         <span class="category-label">{{ cat }}</span>
       </div>
