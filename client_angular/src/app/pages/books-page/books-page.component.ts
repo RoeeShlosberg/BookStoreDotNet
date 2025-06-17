@@ -38,6 +38,11 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
   showEditBookForm: boolean = false;
   editingBookId: number | null = null;
   editBookError: string | null = null;
+  
+  // Properties for the share feature
+  sharedListId: string | null = null;
+  sharingInProgress: boolean = false;
+  linkCopied: boolean = false;
 
   constructor(
     private bookService: BookService, 
@@ -331,5 +336,74 @@ export class BooksPageComponent implements OnInit, OnDestroy { // Implement OnDe
   get editCategoryControls(): FormControl[] {
     const arr = this.editBookForm.get('categories');
     return (arr && arr instanceof FormArray) ? (arr.controls as FormControl[]) : [];
+  }
+
+  createSharedList(): void {
+    if (this.filteredBooks.length === 0) {
+      return;
+    }
+
+    this.sharingInProgress = true;
+    const bookIds = this.filteredBooks.map(book => book.id);
+    
+    this.bookService.createSharedList(bookIds).subscribe({
+      next: (response) => {
+        this.sharingInProgress = false;
+        this.sharedListId = response.id;
+      },
+      error: (err) => {
+        this.sharingInProgress = false;
+        this.error = 'Failed to create shared list. Please try again.';
+        console.error('Error creating shared list:', err);
+      }
+    });
+  }
+
+  getFullShareUrl(): string {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/share/${this.sharedListId}`;
+  }
+
+  copyShareLink(inputElement: HTMLInputElement): void {
+    inputElement.select();
+    document.execCommand('copy');
+    this.linkCopied = true;
+    
+    // Reset the copied flag after 2 seconds
+    setTimeout(() => {
+      this.linkCopied = false;
+    }, 2000);
+  }
+
+  closeShareDialog(): void {
+    this.sharedListId = null;
+    this.linkCopied = false;
+  }
+
+  getWhatsAppShareUrl(): string {
+    const shareUrl = this.getFullShareUrl();
+    const bookCount = this.filteredBooks.length;
+    const message = `Check out this collection of ${bookCount} books! ${shareUrl}`;
+    return `https://wa.me/?text=${encodeURIComponent(message)}`;
+  }
+
+  getFacebookShareUrl(): string {
+    const shareUrl = this.getFullShareUrl();
+    return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+  }
+
+  getTwitterShareUrl(): string {
+    const shareUrl = this.getFullShareUrl();
+    const bookCount = this.filteredBooks.length;
+    const message = `Check out my curated collection of ${bookCount} books!`;
+    return `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(shareUrl)}`;
+  }
+
+  getEmailShareUrl(): string {
+    const shareUrl = this.getFullShareUrl();
+    const bookCount = this.filteredBooks.length;
+    const subject = `A Book Collection to Check Out`;
+    const body = `Hi,\n\nI thought you might enjoy this collection of ${bookCount} books.\n\nCheck it out here: ${shareUrl}\n\nEnjoy!`;
+    return `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 }

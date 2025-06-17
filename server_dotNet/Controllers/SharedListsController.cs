@@ -14,23 +14,35 @@ namespace BookStore.Controllers
         public SharedListsController(SharedBookListService service)
         {
             _service = service;
-        }
-
-        // POST: api/SharedLists
+        }        // POST: api/SharedLists
         [HttpPost]
         public async Task<ActionResult<string>> CreateSharedList([FromBody] List<int> bookIds)
         {
-            var sharedList = await _service.CreateSharedListAsync(bookIds);
-            return Ok(sharedList.Id);
+            try
+            {
+                var sharedList = await _service.CreateSharedListAsync(bookIds);
+                return Ok(new { id = sharedList.Id });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET: api/SharedLists/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<List<Book>>> GetSharedList(string id)
         {
-            var books = await _service.GetBooksForSharedListAsync(id);
-            if (books == null) return NotFound();
-            return Ok(books);
+            try
+            {
+                var books = await _service.GetBooksForSharedListAsync(id);
+                if (books == null) return NotFound();
+                return Ok(books);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

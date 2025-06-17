@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <!-- Clean circular background -->
+  <circle cx="250" cy="250" r="240" fill="url(#grad)" stroke="#8A2BE2" stroke-width="8"/>
+  
+  <!-- Modern logo-style book -->
+  <g transform="translate(150, 140)">
+    <!-- Stylized open book -->
+    <path d="M0,0 L200,0 L200,140 Q100,110 0,140 Z" fill="#ffffff" stroke="#8A2BE2" stroke-width="6"/>
+    
+    <!-- Book pages detail -->
+    <path d="M100,0 L100,140 Q150,120 200,140 L200,0 Z" fill="#f8faff" stroke="#8A2BE2" stroke-width="6"/>
+    
+    <!-- Bookmark -->
+    <path d="M160,0 L180,0 L180,60 L170,45 L160,60 Z" fill="#FF007F" stroke="#8A2BE2" stroke-width="2"/>
+    
+    <!-- Stylized text lines (left page) -->
+    <line x1="30" y1="40" x2="80" y2="40" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/>
+    <line x1="30" y1="60" x2="70" y2="60" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/>
+    <line x1="30" y1="80" x2="80" y2="80" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/>
+    <line x1="30" y1="100" x2="60" y2="100" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- Stylized text lines (right page) -->
+    <line x1="120" y1="40" x2="170" y2="40" stroke="#b6ccff" stroke-width="4" stroke-linecap="round"/>
+    <line x1="120" y1="60" x2="160" y2="60" stroke="#b6ccff" stroke-width="4" stroke-linecap="round"/>
+    <line x1="120" y1="80" x2="170" y2="80" stroke="#b6ccff" stroke-width="4" stroke-linecap="round"/>
+    <line x1="120" y1="100" x2="150" y2="100" stroke="#b6ccff" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Website name -->
+  <text x="250" y="340" font-family="Arial, sans-serif" font-size="36" font-weight="bold" text-anchor="middle" fill="#ffffff">Book Store</text>
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8A2BE2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF007F;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

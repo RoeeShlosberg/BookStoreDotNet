@@ -6,6 +6,7 @@ import { LoginPageComponent } from './pages/login-page/login-page.component'; //
 import { RegisterPageComponent } from './pages/register-page/register-page.component'; // Added import
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component'; // Import NotFoundPageComponent
 import { AuthGuard } from './guards/auth.guard';
+import { SharedListPageComponent } from './pages/shared-list-page/shared-list-page.component'; // Import SharedListPageComponent
 
 export const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -13,5 +14,6 @@ export const routes: Routes = [
   { path: 'book/:id', component: BookPageComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegisterPageComponent },
+  { path: 'share/:id', component: SharedListPageComponent },
   { path: '**', component: NotFoundPageComponent }, // Wildcard route for 404
 ];

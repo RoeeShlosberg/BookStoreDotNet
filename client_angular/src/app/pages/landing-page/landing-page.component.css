@@ -8,25 +8,59 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 88vh; /* Full viewport height */
+  min-height: 80vh; /* Full viewport height */
   text-align: center;
   padding: 2rem;
   /* Example Gradient Background */
   background: linear-gradient(135deg, #00a664 0%, #764ba2 100%);
   color: white; /* Change text color for contrast */
-  min-height: 90.5vh; /* Ensure it takes at least the full viewport height */
+  min-height: 85vh; /* Ensure it takes at least the full viewport height */
+}
+
+.logo-container {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.book-icon {
+  width: 150px;
+  height: 150px;
+  animation: float-and-glow 8s ease-in-out infinite;
+  filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes float-and-glow {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+  }
+  25% {
+    filter: drop-shadow(0 8px 20px rgba(138, 43, 226, 0.4));
+  }
+  50% {
+    transform: translateY(-15px) rotate(2deg);
+    filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4));
+  }
+  75% {
+    filter: drop-shadow(0 8px 20px rgba(75, 167, 232, 0.4));
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+  }
 }
 
 .landing-container h1 {
   font-size: 3rem; /* Larger title */
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   /* color: #333; */ /* Removed as text color is now white */
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* Add a subtle shadow */
 }
 
 .landing-container p {
-  font-size: 1.3rem;
-  margin-bottom: 2.5rem;
+  font-size: 1.1rem;
+  margin-bottom: 2.2rem;
 }
 
 .landing-container button {
@@ -75,7 +109,7 @@ body {
 
 /* Styling for the features section */
 .features {
-  margin-top: 3rem; /* Add some space above the features section */
+  margin-top: 1.8rem; /* Add some space above the features section */
   width: 100%; /* Ensure it takes full width for centering its children if needed */
   display: flex; /* Using flex to arrange feature cards */
   justify-content: space-around; /* Distribute space around feature cards */

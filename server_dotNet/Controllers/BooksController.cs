@@ -29,6 +29,7 @@ namespace BookStore.Controllers
         /// </summary>
         /// <returns>A list of all books in the library</returns>
         /// <response code="200">Returns the list of books</response>
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetBooks()
@@ -47,7 +48,7 @@ namespace BookStore.Controllers
         /// <returns>The requested book</returns>
         /// <response code="200">Returns the requested book</response>
         /// <response code="404">If the book is not found</response>
-        
+        [Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

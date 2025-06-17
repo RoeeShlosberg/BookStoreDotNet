@@ -1,0 +1,305 @@
+.shared-list-page {
+  width: 90%;
+  max-width: 1200px;
+  margin: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(138, 43, 226, 0.2);
+}
+
+.header-container h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #8A2BE2, #FF007F);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.home-button {
+  height: auto;
+  line-height: normal;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #8A2BE2, #FF007F);
+  color: white;
+  border-radius: 30px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+  transition: all 0.3s ease;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(138, 43, 226, 0.5);
+}
+
+.home-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.home-button:hover::after {
+  transform: translateX(100%);
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Filters Container */
+.filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .filters-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  
+  .search-bar {
+    flex: 2;
+    margin-right: 1rem;
+    margin-bottom: 0;
+  }
+  
+  .category-filter {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 0;
+  }
+}
+
+.search-bar, .category-filter {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.rank-filter {
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.05), rgba(255, 0, 127, 0.05));
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(138, 43, 226, 0.1);
+}
+
+.rank-filter label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #6200ea;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.rank-filter mat-slider {
+  width: 100%;
+}
+
+/* Style for Material inputs and selects */
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(138, 43, 226, 0.5);
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #8A2BE2;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-label {
+  color: rgba(138, 43, 226, 0.8);
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-label {
+  color: #8A2BE2;
+}
+
+::ng-deep .mat-input-element {
+  caret-color: #8A2BE2;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-select-arrow {
+  color: #8A2BE2;
+}
+
+/* Make form fields more compact */
+::ng-deep .mat-mdc-form-field {
+  margin-bottom: 0;
+}
+
+::ng-deep .mat-mdc-form-field-infix {
+  min-height: 40px !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+::ng-deep .mdc-text-field--outlined {
+  padding: 0 !important;
+}
+
+.book-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+.loading, .no-books, .error-message {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.loading {
+  color: #8A2BE2;
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.05), rgba(255, 0, 127, 0.05));
+  border: 1px solid rgba(138, 43, 226, 0.2);
+  position: relative;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #8A2BE2, #FF007F, #8A2BE2);
+  background-size: 200% 100%;
+  animation: loadingBar 2s infinite linear;
+}
+
+@keyframes loadingBar {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+
+.no-books {
+  color: #FF007F;
+  background: linear-gradient(135deg, rgba(255, 0, 127, 0.05), rgba(138, 43, 226, 0.05));
+  border: 1px solid rgba(255, 0, 127, 0.2);
+}
+
+.error-message {
+  color: #f44336;
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.05), rgba(244, 67, 54, 0.1));
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.1);
+}
+
+/* Additional styling for rank value and slider */
+.rank-value {
+  color: #FF007F;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+::ng-deep .colored-slider {
+  margin: 0;
+}
+
+::ng-deep .colored-slider .mdc-slider__thumb-knob {
+  background-color: #8A2BE2;
+  border-color: #8A2BE2;
+}
+
+::ng-deep .colored-slider .mdc-slider__track--active {
+  background-color: #8A2BE2;
+}
+
+::ng-deep .colored-slider .mdc-slider__track--inactive {
+  background-color: rgba(138, 43, 226, 0.3);
+}
+
+/* Status message icons */
+.loading-text, .error-icon, .no-books-icon {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Add a subtle background pattern */
+.shared-list-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 25px 25px, rgba(138, 43, 226, 0.05) 2%, transparent 0%),
+    radial-gradient(circle at 75px 75px, rgba(255, 0, 127, 0.05) 2%, transparent 0%);
+  background-size: 100px 100px;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 15px;
+}
+
+.full-width-container {  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  /* Vibrant blue to purple gradient */
+  background: linear-gradient(135deg, #c9e3ff, #8fb4f4, #c4b5fd, #d8b4fe);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: hidden;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
