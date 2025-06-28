@@ -26,7 +26,6 @@ export class LoginPageComponent {
     const credentials: UserCredentials = form.value;
     this.authService.login(credentials).subscribe({
       next: () => {
-        alert('Login successful!'); // Optionally show a success message
         this.router.navigate(['/books']); // Navigate to books page on successful login
       },
       error: (err) => {
