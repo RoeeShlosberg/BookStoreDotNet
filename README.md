@@ -3,6 +3,8 @@
 🚀 A full-stack bookstore app built to demonstrate modern web development with a robust .NET 8 backend and a sleek Angular 17 frontend. Includes authentication, user-specific libraries, book categories, ratings, public shareable book lists, social media integration, comprehensive testing, and a full CI pipeline with GitHub Actions.
 
 ---
+<img src="./public/bookHome.png" alt="BookStore Main Page" width="720" />
+
 
 ## 🏗️ Project Structure
 
@@ -77,7 +79,7 @@ To run tests locally:
 
 ```bash
 cd server_dotNet
-dotnet test
+dotnet test BookStore.sln
 ```
 
 ---
@@ -110,18 +112,51 @@ The frontend is a modern, responsive single-page application (SPA) built with An
 
 ### 🔧 Setup & Running
 
-1.  **Navigate to the frontend directory**:
+#### 🖥️ Backend (.NET 8 API)
+
+1. **Navigate to the backend directory**:
+    ```bash
+    cd server_dotNet
+    ```
+2. **Apply database migrations (first run or after schema changes)**:
+    ```bash
+    dotnet ef database update
+    ```
+3. **Run the backend server**:
+    ```bash
+    dotnet run
+    ```
+    The API will be available at `http://localhost:5000/api` and Swagger UI at `http://localhost:5000/swagger`.
+
+---
+
+#### 🌐 Frontend (Angular 17)
+
+1. **Navigate to the frontend directory**:
     ```bash
     cd client_angular
     ```
-2.  **Install dependencies**:
+2. **Install dependencies**:
     ```bash
     npm install
     ```
-3.  **Run the development server**:
+3. **Run the development server**:
     ```bash
     ng serve
     ```
     The application will be available at `http://localhost:4200`.
+
+---
+
+### 🖼️ Website Glimpse
+
+**Login Page**  
+<img src="./public/loginBooks.png" alt="BookStore Login Page" width="520" height="286" />
+
+**Add Book Form**  
+<img src="./public/editBook.png" alt="Add Book Form" width="520" height="364" />
+
+**Share Book List Feature**  
+<img src="./public/sharelist.png" alt="Share Book List Dialog" width="520" height="286" />
 
 
